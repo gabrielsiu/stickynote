@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<!-- Enable/Disable Tweak -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Enable Tweak</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>isEnabled</string>
+		</dict>
+		<!-- Appearance -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Appearance</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBStepperTableCell</string>
+			<key>default</key>
+			<real>20</real>
+			<key>label</key>
+			<string>Font Size: %i</string>
+			<key>min</key>
+			<real>10</real>
+			<key>max</key>
+			<real>72</real>
+			<key>singularLabel</key>
+			<string>Font Size: 10</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>fontSize</string>
+		</dict>
+		<!-- About/Acknowledgements -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>About</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>SNPAcknowledgementsController</string>
+			<key>label</key>
+			<string>Acknowledgements</string>
+		</dict>
+		<dict>
+			<key>big</key>
+			<true/>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>height</key>
+			<integer>56</integer>
+			<key>label</key>
+			<string>Gabriel Siu</string>
+			<key>user</key>
+			<string>gabrielsiu_dev</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>StickyNote</string>
+</dict>
+</plist>
