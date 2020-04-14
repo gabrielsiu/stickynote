@@ -67,30 +67,30 @@ CGPoint initialCenter;
 	CGFloat finalAlpha = shouldHide ? 0.0f : 0.8f;
 
 	if (!shouldHide) { [noteVC.noteView setHidden:NO]; }
-    [UIView animateWithDuration:0.2f animations:^{
+	[UIView animateWithDuration:0.2f animations:^{
 		[noteVC.noteView setAlpha:finalAlpha];
-    } completion:^(BOOL finished) {
+	} completion:^(BOOL finished) {
 		if (shouldHide) { [noteVC.noteView setHidden:YES]; }
-    }];
+	}];
 }
 
-// Handle pan gesture
-// https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/handling_uikit_gestures/handling_pan_gestures
+// Handle pan gesture for dragging the note around
+// Adapted from https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/handling_uikit_gestures/handling_pan_gestures
 %new
 - (void)handleDrag:(UIPanGestureRecognizer *)sender {
 	if (!sender.view) { return; }
 	
-    UIView *noteView = sender.view;
-    CGPoint translation = [sender translationInView:noteView.superview];
-    
-    if (sender.state == UIGestureRecognizerStateBegan) {
-        initialCenter = noteView.center;
-    }
-    if (sender.state != UIGestureRecognizerStateCancelled) {
-        noteView.center = CGPointMake(initialCenter.x + translation.x, initialCenter.y + translation.y);
-    } else {
-        noteView.center = initialCenter;
-    }
+	UIView *noteView = sender.view;
+	CGPoint translation = [sender translationInView:noteView.superview];
+	
+	if (sender.state == UIGestureRecognizerStateBegan) {
+		initialCenter = noteView.center;
+	}
+	if (sender.state != UIGestureRecognizerStateCancelled) {
+		noteView.center = CGPointMake(initialCenter.x + translation.x, initialCenter.y + translation.y);
+	} else {
+		noteView.center = initialCenter;
+	}
 }
 
 %end
