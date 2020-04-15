@@ -4,6 +4,7 @@
 <dict>
 	<key>items</key>
 	<array>
+		<!-- Original Tweak -->
         <dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>

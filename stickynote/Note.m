@@ -5,9 +5,10 @@
 
 # pragma mark - Initialization
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame defaults:(NSDictionary *)defaultsDict {
 	self = [super initWithFrame:frame];
 	if (self) {
+		defaults = defaultsDict;
 		[self setupStyle];
 		[self setupButtons];
 		[self setupTextView];
@@ -24,6 +25,8 @@
 	self.layer.shadowOffset = CGSizeMake(-5, 5);
 	self.layer.shadowRadius = 5;
 	self.layer.shadowOpacity = 0.5;
+	NSNumber *defaultsCornerRadius = [defaults valueForKey:@"cornerRadius"];
+	self.layer.cornerRadius = defaultsCornerRadius ? defaultsCornerRadius.intValue : kDefaultCornerRadius;
 	[self setAlpha:0.8f];
 }
 
@@ -47,7 +50,9 @@
 	textView = [[UITextView alloc] initWithFrame:CGRectMake(0, kIconSize, 250, self.frame.size.height - kIconSize) textContainer:nil];
 	textView.backgroundColor = [UIColor clearColor];
 	textView.textColor = [UIColor blackColor];
-	textView.font = [UIFont systemFontOfSize:20];
+	NSNumber *defaultsFontSize = [defaults valueForKey:@"fontSize"];
+	NSInteger fontSize = defaultsFontSize ? defaultsFontSize.intValue : kDefaultFontSize;
+	textView.font = [UIFont systemFontOfSize:fontSize];
 	[self addSubview:textView];
 }
 

@@ -19,6 +19,7 @@
 
 NoteViewController *noteVC;
 UIButton *hideButton;
+NSDictionary *defaults;
 CGPoint initialCenter;
 
 # pragma mark - CSCoverSheetViewBase Hook
@@ -29,6 +30,7 @@ CGPoint initialCenter;
 	%orig;
 	if (!noteVC) {
 		if ([self.superview isMemberOfClass:[%c(CSMainPageView) class]]) {
+			defaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.gabrielsiu.stickynoteprefs"];
 			[self setupNote];
 			[self setupHideButton];
 		}
@@ -39,8 +41,7 @@ CGPoint initialCenter;
 
 %new
 - (void)setupNote {
-	CGSize noteSize = CGSizeMake(250, 250);
-	noteVC = [[NoteViewController alloc] initWithNoteSize:noteSize];
+	noteVC = [[NoteViewController alloc] initWithDefaults:defaults];
 
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
 	[noteVC.noteView addGestureRecognizer:fingerDrag];
@@ -53,7 +54,13 @@ CGPoint initialCenter;
 	if (!noteVC.noteView) { return; }
 	hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note-light.png"]] forState:UIControlStateNormal];
-	hideButton.frame = CGRectMake(0, self.frame.size.height - kIconSize - 15, kIconSize + 15, kIconSize + 15);
+	hideButton.backgroundColor = [UIColor redColor];
+	
+	NSNumber *defaultsXOffset = [defaults valueForKey:@"xOffset"];
+	NSNumber *defaultsYOffset = [defaults valueForKey:@"yOffset"];
+	NSInteger xOffset = defaultsXOffset ? defaultsXOffset.intValue : 0;
+	NSInteger yOffset = defaultsYOffset ? defaultsYOffset.intValue : 0;
+	hideButton.frame = CGRectMake(xOffset, self.frame.size.height - kIconSize - 15 - yOffset, kIconSize + 15, kIconSize + 15);
 	[hideButton addTarget:self action:@selector(didPressHideButton:) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:hideButton];
 }

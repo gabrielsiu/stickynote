@@ -40,11 +40,105 @@
 			<key>max</key>
 			<real>72</real>
 			<key>singularLabel</key>
-			<string>Font Size: 10</string>
+			<string>Font Size: 1</string>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
 			<string>fontSize</string>
+		</dict>
+		<!-- Sizing -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Sizing</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Corner Radius:</string>
+			<key>placeholder</key>
+			<string>5</string>
+			<key>bestGuess</key>
+			<string>5</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>cornerRadius</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Width:</string>
+			<key>placeholder</key>
+			<string>250</string>
+			<key>bestGuess</key>
+			<string>250</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>width</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Height:</string>
+			<key>placeholder</key>
+			<string>250</string>
+			<key>bestGuess</key>
+			<string>250</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>height</string>
+		</dict>
+		<!-- Hide Button Offset -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Hide Button Offset</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>placeholder</key>
+			<string>0</string>
+			<key>bestGuess</key>
+			<string>0</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>key</key>
+			<string>xOffset</string>
+			<key>label</key>
+			<string>X-Axis Offset:</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>placeholder</key>
+			<string>0</string>
+			<key>bestGuess</key>
+			<string>0</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>key</key>
+			<string>yOffset</string>
+			<key>label</key>
+			<string>Y-Axis Offset:</string>
 		</dict>
 		<!-- About/Acknowledgements -->
 		<dict>

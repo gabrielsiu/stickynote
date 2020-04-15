@@ -4,7 +4,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = StickyNote
 
-StickyNote_FILES = Tweak.xm Note.m NoteViewController.m Constants.m
+StickyNote_FILES = Tweak.xm Note.m NoteViewController.m Constants.m NSDictionary+DefaultsValue.m
 StickyNote_CFLAGS = -fobjc-arc
 StickyNote_EXTRA_FRAMEWORKS += Cephei
 

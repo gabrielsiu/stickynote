@@ -4,6 +4,6 @@
 
 @property (nonatomic, strong) Note *noteView;
 
-- (id)initWithNoteSize:(CGSize)size;
+- (id)initWithDefaults:(NSDictionary *)defaults;
 
 @end
