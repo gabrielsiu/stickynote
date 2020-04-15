@@ -2,8 +2,8 @@
 
 @implementation NSDictionary (DefaultsValue)
 
-// Only use if the value for the specified key should not be 0
-- (NSInteger)defaultsValueForKey:(NSString *)key fallback:(NSInteger)fallback {
+// Only use this method if the value for the specified key should not be 0
+- (NSInteger)intValueForKey:(NSString *)key fallback:(NSInteger)fallback {
 	NSNumber *defaultsValue = [self valueForKey:key];
 	if (defaultsValue) {
 		if (defaultsValue.intValue != 0) {

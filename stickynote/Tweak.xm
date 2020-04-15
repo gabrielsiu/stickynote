@@ -55,7 +55,7 @@ CGPoint initialCenter;
 	hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note-light.png"]] forState:UIControlStateNormal];
 	hideButton.backgroundColor = [UIColor redColor];
-	
+
 	NSNumber *defaultsXOffset = [defaults valueForKey:@"xOffset"];
 	NSNumber *defaultsYOffset = [defaults valueForKey:@"yOffset"];
 	NSInteger xOffset = defaultsXOffset ? defaultsXOffset.intValue : 0;
@@ -73,8 +73,25 @@ CGPoint initialCenter;
 	BOOL shouldHide = !noteVC.noteView.isHidden;
 	CGFloat finalAlpha = shouldHide ? 0.0f : 0.8f;
 
+	NSTimeInterval duration;
+	id useCustomDuration = [defaults valueForKey:@"useCustomDuration"];
+	if (useCustomDuration) {
+		if ([useCustomDuration isEqual:@1]) {
+			NSNumber *defaultsDuration = [defaults valueForKey:@"customDuration"];
+			if (defaultsDuration) {
+				duration = defaultsDuration.doubleValue;
+			} else {
+				duration = kDefaultAnimDuration;
+			}
+		} else {
+			duration = kDefaultAnimDuration;
+		}
+	} else {
+		duration = kDefaultAnimDuration;
+	}
+	
 	if (!shouldHide) { [noteVC.noteView setHidden:NO]; }
-	[UIView animateWithDuration:0.2f animations:^{
+	[UIView animateWithDuration:duration animations:^{
 		[noteVC.noteView setAlpha:finalAlpha];
 	} completion:^(BOOL finished) {
 		if (shouldHide) { [noteVC.noteView setHidden:YES]; }

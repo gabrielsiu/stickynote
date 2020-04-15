@@ -9,8 +9,8 @@
 - (id)initWithDefaults:(NSDictionary *)defaultsDict {
 	self = [super initWithNibName:nil bundle:nil];
 	if (self) {
-		NSInteger width = [defaultsDict defaultsValueForKey:@"width" fallback:kDefaultNoteSize];
-		NSInteger height = [defaultsDict defaultsValueForKey:@"height" fallback:kDefaultNoteSize];
+		NSInteger width = [defaultsDict intValueForKey:@"width" fallback:kDefaultNoteSize];
+		NSInteger height = [defaultsDict intValueForKey:@"height" fallback:kDefaultNoteSize];
 
 		self.noteView = [[Note alloc] initWithFrame:CGRectMake(50, 50, width, height) defaults:defaultsDict];
 		if (self.noteView) {

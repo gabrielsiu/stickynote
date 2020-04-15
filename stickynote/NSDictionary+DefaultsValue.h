@@ -1,5 +1,5 @@
 @interface NSDictionary (DefaultsValue)
 
-- (NSInteger)defaultsValueForKey:(NSString *)key fallback:(NSInteger)fallback;
+- (NSInteger)intValueForKey:(NSString *)key fallback:(NSInteger)fallback;
 
 @end

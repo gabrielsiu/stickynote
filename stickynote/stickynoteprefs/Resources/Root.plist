@@ -58,12 +58,12 @@
 			<string>PSEditTextCell</string>
 			<key>label</key>
 			<string>Corner Radius:</string>
+			<key>isNumeric</key>
+			<true/>
 			<key>placeholder</key>
 			<string>5</string>
 			<key>bestGuess</key>
 			<string>5</string>
-			<key>isNumeric</key>
-			<true/>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
@@ -74,12 +74,12 @@
 			<string>PSEditTextCell</string>
 			<key>label</key>
 			<string>Width:</string>
+			<key>isNumeric</key>
+			<true/>
 			<key>placeholder</key>
 			<string>250</string>
 			<key>bestGuess</key>
 			<string>250</string>
-			<key>isNumeric</key>
-			<true/>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
@@ -90,12 +90,12 @@
 			<string>PSEditTextCell</string>
 			<key>label</key>
 			<string>Height:</string>
+			<key>isNumeric</key>
+			<true/>
 			<key>placeholder</key>
 			<string>250</string>
 			<key>bestGuess</key>
 			<string>250</string>
-			<key>isNumeric</key>
-			<true/>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
@@ -111,34 +111,79 @@
 		<dict>
 			<key>cell</key>
 			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>X-Axis Offset:</string>
+			<key>isNumeric</key>
+			<true/>
 			<key>placeholder</key>
 			<string>0</string>
 			<key>bestGuess</key>
 			<string>0</string>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
-			<key>isNumeric</key>
-			<true/>
 			<key>key</key>
 			<string>xOffset</string>
-			<key>label</key>
-			<string>X-Axis Offset:</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Y-Axis Offset:</string>
+			<key>isNumeric</key>
+			<true/>
 			<key>placeholder</key>
 			<string>0</string>
 			<key>bestGuess</key>
 			<string>0</string>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
-			<key>isNumeric</key>
-			<true/>
 			<key>key</key>
 			<string>yOffset</string>
+		</dict>
+		<!-- Animations -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Y-Axis Offset:</string>
+			<string>Animations</string>
+			<key>footerText</key>
+        	<string>Default duration for the hide animation is 0.2 seconds.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>SNPAnimationsListController</string>
+			<key>label</key>
+			<string>Hide Animation</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Custom animation duration</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>useCustomDuration</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>min</key>
+			<real>0.0</real>
+			<key>max</key>
+			<real>5.0</real>
+			<key>default</key>
+			<real>0.2</real>
+			<key>showValue</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>customDuration</string>
 		</dict>
 		<!-- About/Acknowledgements -->
 		<dict>

@@ -1,4 +1,5 @@
 #import "Constants.h"
+#import "NSDictionary+DefaultsValue.h"
 #import "Note.h"
 
 @implementation Note
@@ -21,12 +22,11 @@
 
 - (void)setupStyle {
 	self.backgroundColor = [UIColor yellowColor];
+	self.layer.cornerRadius = [defaults intValueForKey:@"cornerRadius" fallback:kDefaultCornerRadius];
 	self.layer.masksToBounds = NO;
 	self.layer.shadowOffset = CGSizeMake(-5, 5);
 	self.layer.shadowRadius = 5;
 	self.layer.shadowOpacity = 0.5;
-	NSNumber *defaultsCornerRadius = [defaults valueForKey:@"cornerRadius"];
-	self.layer.cornerRadius = defaultsCornerRadius ? defaultsCornerRadius.intValue : kDefaultCornerRadius;
 	[self setAlpha:0.8f];
 }
 
