@@ -21,13 +21,21 @@
 # pragma mark - Setup
 
 - (void)setupStyle {
-	self.backgroundColor = [UIColor yellowColor];
+	// TODO: Fix colors
+	// BOOL useCustomColor = [defaults boolValueForKey:@"useCustomNoteColor" fallback:NO];
+	self.backgroundColor = [UIColor yellowColor];//useCustomColor ? [defaults colorValueForKey:@"noteColor" fallback:@"#ffff00"] : [UIColor yellowColor];
 	self.layer.cornerRadius = [defaults intValueForKey:@"cornerRadius" fallback:kDefaultCornerRadius];
 	self.layer.masksToBounds = NO;
 	self.layer.shadowOffset = CGSizeMake(-5, 5);
 	self.layer.shadowRadius = 5;
 	self.layer.shadowOpacity = 0.5;
-	[self setAlpha:0.8f];
+	double alphaValue;
+	if ([defaults boolValueForKey:@"useCustomAlpha" fallback:NO]) {
+		alphaValue = [defaults doubleValueForKey:@"alphaValue" fallback:kDefaultAlpha];
+	} else {
+		alphaValue = kDefaultAlpha;
+	}
+	[self setAlpha:alphaValue];
 }
 
 - (void)setupButtons {
@@ -49,7 +57,9 @@
 - (void)setupTextView {
 	textView = [[UITextView alloc] initWithFrame:CGRectMake(0, kIconSize, 250, self.frame.size.height - kIconSize) textContainer:nil];
 	textView.backgroundColor = [UIColor clearColor];
-	textView.textColor = [UIColor blackColor];
+	// TODO: Fix colors
+	//BOOL useCustomFontColor = [defaults boolValueForKey:@"useCustomFontColor" fallback:NO];
+	textView.textColor = [UIColor blackColor];//useCustomFontColor ? [defaults colorValueForKey:@"fontColor" fallback:@"#000000"] : [UIColor blackColor];
 	NSNumber *defaultsFontSize = [defaults valueForKey:@"fontSize"];
 	NSInteger fontSize = defaultsFontSize ? defaultsFontSize.intValue : kDefaultFontSize;
 	textView.font = [UIFont systemFontOfSize:fontSize];
@@ -88,6 +98,7 @@
 - (void)showDismissKeyboardButton {
 	[dismissKeyboardButton setHidden:NO];
 }
+
 - (void)hideDismissKeyboardButton {
 	[dismissKeyboardButton setHidden:YES];
 }

@@ -1,4 +1,5 @@
 #import "Constants.h"
+#import "NSDictionary+DefaultsValue.h"
 #import "NoteViewController.h"
 
 # pragma mark - Interfaces
@@ -71,25 +72,21 @@ CGPoint initialCenter;
 %new
 - (void)didPressHideButton:(UIButton *)sender {
 	BOOL shouldHide = !noteVC.noteView.isHidden;
-	CGFloat finalAlpha = shouldHide ? 0.0f : 0.8f;
+	double alphaValue;
+	if ([defaults boolValueForKey:@"useCustomAlpha" fallback:NO]) {
+		alphaValue = [defaults doubleValueForKey:@"alphaValue" fallback:kDefaultAlpha];
+	} else {
+		alphaValue = kDefaultAlpha;
+	}
+	CGFloat finalAlpha = shouldHide ? 0.0f : alphaValue;
 
 	NSTimeInterval duration;
-	id useCustomDuration = [defaults valueForKey:@"useCustomDuration"];
-	if (useCustomDuration) {
-		if ([useCustomDuration isEqual:@1]) {
-			NSNumber *defaultsDuration = [defaults valueForKey:@"customDuration"];
-			if (defaultsDuration) {
-				duration = defaultsDuration.doubleValue;
-			} else {
-				duration = kDefaultAnimDuration;
-			}
-		} else {
-			duration = kDefaultAnimDuration;
-		}
+	if ([defaults boolValueForKey:@"useCustomDuration" fallback:NO]) {
+		duration = [defaults doubleValueForKey:@"customDuration" fallback:kDefaultAnimDuration];
 	} else {
 		duration = kDefaultAnimDuration;
 	}
-	
+
 	if (!shouldHide) { [noteVC.noteView setHidden:NO]; }
 	[UIView animateWithDuration:duration animations:^{
 		[noteVC.noteView setAlpha:finalAlpha];
