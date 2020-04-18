@@ -1,12 +1,9 @@
-@interface Note : UIView <UITextViewDelegate> {
-    UIButton *dismissKeyboardButton;
+@interface Note : UIView {
     UIButton *clearButton;
     UITextView *textView;
-    UIView *privacyView;
+    NSDictionary *defaults;
 }
 
-- (void)showDismissKeyboardButton;
-- (void)hideDismissKeyboardButton;
-- (void)setTextViewDelegate:(id)delegate;
+- (id)initWithFrame:(CGRect)frame defaults:(NSDictionary *)defaultsDict;
 
 @end
