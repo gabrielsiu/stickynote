@@ -13,7 +13,6 @@
 		[self setupStyle];
 		[self setupClearButton];
 		[self setupTextView];
-		// [self setupPrivacyView];
 	}
 	return self;
 }
@@ -65,21 +64,6 @@
     textView.inputAccessoryView = doneButtonView;
 
 	[self addSubview:textView];
-}
-
-- (void)setupPrivacyView {
-	privacyView = [[UIView alloc] initWithFrame:self.bounds];
-	privacyView.backgroundColor = [UIColor blueColor];
-	[privacyView setAlpha:1.0f];
-
-	UIImage *lockIcon = [UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-lock.png"]];
-	UIImageView *lockIconView = [[UIImageView alloc] initWithImage:lockIcon];
-	[privacyView addSubview:lockIconView];
-	lockIconView.translatesAutoresizingMaskIntoConstraints = NO;
-	[lockIconView.centerXAnchor constraintEqualToAnchor:privacyView.centerXAnchor].active = YES;
-	[lockIconView.centerYAnchor constraintEqualToAnchor:privacyView.centerYAnchor].active = YES;
-
-	[self addSubview:privacyView];
 }
 
 # pragma mark - Actions

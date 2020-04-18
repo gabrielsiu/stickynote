@@ -1,7 +1,6 @@
 @interface Note : UIView {
     UIButton *clearButton;
     UITextView *textView;
-    UIView *privacyView;
     NSDictionary *defaults;
 }
 
