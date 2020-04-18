@@ -56,14 +56,13 @@ CGPoint initialCenter;
 - (void)setupHideButton {
 	if (!noteView) { return; }
 	hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note-light.png"]] forState:UIControlStateNormal];
-	hideButton.backgroundColor = [UIColor redColor];
+	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note.png"]] forState:UIControlStateNormal];
 
 	NSNumber *defaultsXOffset = [defaults valueForKey:@"xOffset"];
 	NSNumber *defaultsYOffset = [defaults valueForKey:@"yOffset"];
 	NSInteger xOffset = defaultsXOffset ? defaultsXOffset.intValue : 0;
 	NSInteger yOffset = defaultsYOffset ? defaultsYOffset.intValue : 0;
-	hideButton.frame = CGRectMake(xOffset, self.frame.size.height - kIconSize - 15 - yOffset, kIconSize + 15, kIconSize + 15);
+	hideButton.frame = CGRectMake(xOffset, self.frame.size.height - 1.2*kIconSize - yOffset, 1.2*kIconSize, 1.2*kIconSize);
 	[hideButton addTarget:self action:@selector(didPressHideButton:) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:hideButton];
 }
