@@ -82,10 +82,6 @@
 	[self addSubview:privacyView];
 }
 
-- (void)setTextViewDelegate:(id)delegate {
-	textView.delegate = delegate;
-}
-
 # pragma mark - Actions
 
 - (void)dismissKeyboard:(UIButton *)sender {

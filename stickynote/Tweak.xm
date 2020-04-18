@@ -1,6 +1,6 @@
 #import "Constants.h"
 #import "NSDictionary+DefaultsValue.h"
-#import "NoteViewController.h"
+#import "Note.h"
 
 # pragma mark - Interfaces
 
@@ -18,7 +18,7 @@
 
 @end
 
-NoteViewController *noteVC;
+Note *noteView;
 UIButton *hideButton;
 NSDictionary *defaults;
 CGPoint initialCenter;
@@ -29,7 +29,7 @@ CGPoint initialCenter;
 
 - (void)didMoveToSuperview {
 	%orig;
-	if (!noteVC) {
+	if (!noteView) {
 		if ([self.superview isMemberOfClass:[%c(CSMainPageView) class]]) {
 			defaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.gabrielsiu.stickynoteprefs"];
 			[self setupNote];
@@ -42,17 +42,19 @@ CGPoint initialCenter;
 
 %new
 - (void)setupNote {
-	noteVC = [[NoteViewController alloc] initWithDefaults:defaults];
+	NSInteger width = [defaults intValueForKey:@"width" fallback:kDefaultNoteSize];
+	NSInteger height = [defaults intValueForKey:@"height" fallback:kDefaultNoteSize];
+	noteView = [[Note alloc] initWithFrame:CGRectMake(50, 50, width, height) defaults:defaults];
 
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
-	[noteVC.noteView addGestureRecognizer:fingerDrag];
+	[noteView addGestureRecognizer:fingerDrag];
 
-	[self addSubview:noteVC.noteView];
+	[self addSubview:noteView];
 }
 
 %new
 - (void)setupHideButton {
-	if (!noteVC.noteView) { return; }
+	if (!noteView) { return; }
 	hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note-light.png"]] forState:UIControlStateNormal];
 	hideButton.backgroundColor = [UIColor redColor];
@@ -71,7 +73,7 @@ CGPoint initialCenter;
 
 %new
 - (void)didPressHideButton:(UIButton *)sender {
-	BOOL shouldHide = !noteVC.noteView.isHidden;
+	BOOL shouldHide = !noteView.isHidden;
 	double alphaValue;
 	if ([defaults boolValueForKey:@"useCustomAlpha" fallback:NO]) {
 		alphaValue = [defaults doubleValueForKey:@"alphaValue" fallback:kDefaultAlpha];
@@ -87,11 +89,11 @@ CGPoint initialCenter;
 		duration = kDefaultAnimDuration;
 	}
 
-	if (!shouldHide) { [noteVC.noteView setHidden:NO]; }
+	if (!shouldHide) { [noteView setHidden:NO]; }
 	[UIView animateWithDuration:duration animations:^{
-		[noteVC.noteView setAlpha:finalAlpha];
+		[noteView setAlpha:finalAlpha];
 	} completion:^(BOOL finished) {
-		if (shouldHide) { [noteVC.noteView setHidden:YES]; }
+		if (shouldHide) { [noteView setHidden:YES]; }
 	}];
 }
 
