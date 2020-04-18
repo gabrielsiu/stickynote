@@ -11,7 +11,7 @@
 	if (self) {
 		defaults = defaultsDict;
 		[self setupStyle];
-		[self setupButtons];
+		[self setupClearButton];
 		[self setupTextView];
 		// [self setupPrivacyView];
 	}
@@ -38,18 +38,11 @@
 	[self setAlpha:alphaValue];
 }
 
-- (void)setupButtons {
-	dismissKeyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[dismissKeyboardButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-keyboard.png"]] forState:UIControlStateNormal];
-	dismissKeyboardButton.frame = CGRectMake(0, 0, kIconSize, kIconSize);
-	[dismissKeyboardButton addTarget:self action:@selector(didPressDismissKeyboardButton:) forControlEvents:UIControlEventTouchUpInside];
-	[dismissKeyboardButton setHidden:YES];
-	[self addSubview:dismissKeyboardButton];
-
+- (void)setupClearButton {
 	clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[clearButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-clear.png"]] forState:UIControlStateNormal];
 	clearButton.frame = CGRectMake(self.frame.size.width - kIconSize, 0, kIconSize, kIconSize);
-	[clearButton addTarget:self action:@selector(didPressClearButton:) forControlEvents:UIControlEventTouchUpInside];
+	[clearButton addTarget:self action:@selector(clearTextView:) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:clearButton];
 }
 
@@ -63,6 +56,14 @@
 	NSNumber *defaultsFontSize = [defaults valueForKey:@"fontSize"];
 	NSInteger fontSize = defaultsFontSize ? defaultsFontSize.intValue : kDefaultFontSize;
 	textView.font = [UIFont systemFontOfSize:fontSize];
+
+	// Setup 'Done' button on keyboard
+	UIToolbar *doneButtonView = [[UIToolbar alloc] init];
+    [doneButtonView sizeToFit];
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissKeyboard:)];
+    [doneButtonView setItems:[NSArray arrayWithObjects:doneButton, nil]];
+    textView.inputAccessoryView = doneButtonView;
+
 	[self addSubview:textView];
 }
 
@@ -87,20 +88,12 @@
 
 # pragma mark - Actions
 
-- (void)didPressDismissKeyboardButton:(UIButton *)sender {
+- (void)dismissKeyboard:(UIButton *)sender {
 	[textView resignFirstResponder];
 }
 
-- (void)didPressClearButton:(UIButton *)sender {
+- (void)clearTextView:(UIButton *)sender {
 	textView.text = @"";
-}
-
-- (void)showDismissKeyboardButton {
-	[dismissKeyboardButton setHidden:NO];
-}
-
-- (void)hideDismissKeyboardButton {
-	[dismissKeyboardButton setHidden:YES];
 }
 
 @end

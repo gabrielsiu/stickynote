@@ -1,6 +1,6 @@
 #import "Note.h"
 
-@interface NoteViewController : UIViewController <UITextViewDelegate>
+@interface NoteViewController : UIViewController
 
 @property (nonatomic, strong) Note *noteView;
 

@@ -20,14 +20,4 @@
 	return self;
 }
 
-# pragma mark - UITextView Delegate Methods
-
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-	[self.noteView showDismissKeyboardButton];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView {
-	[self.noteView hideDismissKeyboardButton];
-}
-
 @end
