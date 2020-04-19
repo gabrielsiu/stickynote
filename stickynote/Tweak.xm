@@ -63,7 +63,11 @@ CGPoint initialCenter;
 	NSInteger xOffset = defaultsXOffset ? defaultsXOffset.intValue : 0;
 	NSInteger yOffset = defaultsYOffset ? defaultsYOffset.intValue : 0;
 	hideButton.frame = CGRectMake(xOffset, self.frame.size.height - 1.2*kIconSize - yOffset, 1.2*kIconSize, 1.2*kIconSize);
+
 	[hideButton addTarget:self action:@selector(didPressHideButton:) forControlEvents:UIControlEventTouchUpInside];
+	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+	[hideButton addGestureRecognizer:longPress];
+
 	[self addSubview:hideButton];
 }
 
@@ -112,6 +116,16 @@ CGPoint initialCenter;
 		noteView.center = CGPointMake(initialCenter.x + translation.x, initialCenter.y + translation.y);
 	} else {
 		noteView.center = initialCenter;
+	}
+}
+
+// Handle long press gesture for returning note to center of screen
+%new
+- (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
+	if (sender.state == UIGestureRecognizerStateBegan) {
+		[UIView animateWithDuration:0.3f animations:^{
+			noteView.center = CGPointMake(noteView.superview.frame.size.width / 2, noteView.superview.frame.size.height / 2);
+		} completion:NULL];
 	}
 }
 

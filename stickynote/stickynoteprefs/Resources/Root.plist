@@ -28,7 +28,7 @@
 			<key>label</key>
 			<string>Appearance</string>
 			<key>footerText</key>
-        	<string>Default alpha value is 0.80.</string>
+			<string>Default alpha value is 0.80.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -193,12 +193,14 @@
 			<key>key</key>
 			<string>height</string>
 		</dict>
-		<!-- Hide Button Offset -->
+		<!-- Hide Button -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Hide Button Offset</string>
+			<string>Hide Button</string>
+			<key>footerText</key>
+        	<string>Tip: Long press on the hide button to re-center the note.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -239,7 +241,7 @@
 			<key>label</key>
 			<string>Animations</string>
 			<key>footerText</key>
-        	<string>Default duration for the hide animation is 0.2 seconds.</string>
+			<string>Default duration for the hide animation is 0.2 seconds.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
