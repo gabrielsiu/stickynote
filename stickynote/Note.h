@@ -1,9 +1,11 @@
+#import <Cephei/HBPreferences.h>
+
 @interface Note : UIView {
     UIButton *clearButton;
     UITextView *textView;
-    NSDictionary *defaults;
+    HBPreferences *prefs;
 }
 
-- (id)initWithFrame:(CGRect)frame defaults:(NSDictionary *)defaultsDict;
+- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences;
 
 @end

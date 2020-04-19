@@ -1,15 +1,15 @@
+#import "HBPreferences+Helpers.h"
 #import "Constants.h"
-#import "NSDictionary+DefaultsValue.h"
 #import "Note.h"
 
 @implementation Note
 
 # pragma mark - Initialization
 
-- (id)initWithFrame:(CGRect)frame defaults:(NSDictionary *)defaultsDict {
+- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences {
 	self = [super initWithFrame:frame];
 	if (self) {
-		defaults = defaultsDict;
+		prefs = preferences;
 		[self setupStyle];
 		[self setupClearButton];
 		[self setupTextView];
@@ -23,14 +23,18 @@
 	// TODO: Fix colors
 	// BOOL useCustomColor = [defaults boolValueForKey:@"useCustomNoteColor" fallback:NO];
 	self.backgroundColor = [UIColor yellowColor];//useCustomColor ? [defaults colorValueForKey:@"noteColor" fallback:@"#ffff00"] : [UIColor yellowColor];
-	self.layer.cornerRadius = [defaults intValueForKey:@"cornerRadius" fallback:kDefaultCornerRadius];
+	if ([prefs valueExistsForKey:@"cornerRadius"]) {
+		self.layer.cornerRadius = [([prefs objectForKey:@"cornerRadius"] ?: @(kDefaultCornerRadius)) intValue];
+	} else {
+		self.layer.cornerRadius = kDefaultCornerRadius;
+	}
 	self.layer.masksToBounds = NO;
 	self.layer.shadowOffset = CGSizeMake(-5, 5);
 	self.layer.shadowRadius = 5;
 	self.layer.shadowOpacity = 0.5;
 	double alphaValue;
-	if ([defaults boolValueForKey:@"useCustomAlpha" fallback:NO]) {
-		alphaValue = [defaults doubleValueForKey:@"alphaValue" fallback:kDefaultAlpha];
+	if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
+		alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
 	} else {
 		alphaValue = kDefaultAlpha;
 	}
@@ -52,8 +56,7 @@
 	// TODO: Fix colors
 	//BOOL useCustomFontColor = [defaults boolValueForKey:@"useCustomFontColor" fallback:NO];
 	textView.textColor = [UIColor blackColor];//useCustomFontColor ? [defaults colorValueForKey:@"fontColor" fallback:@"#000000"] : [UIColor blackColor];
-	NSNumber *defaultsFontSize = [defaults valueForKey:@"fontSize"];
-	NSInteger fontSize = defaultsFontSize ? defaultsFontSize.intValue : kDefaultFontSize;
+	NSInteger fontSize = [([prefs objectForKey:@"fontSize"] ?: @(kDefaultFontSize)) intValue];
 	textView.font = [UIFont systemFontOfSize:fontSize];
 
 	// Setup 'Done' button on keyboard

@@ -1,5 +1,6 @@
+#import <Cephei/HBPreferences.h>
+#import "HBPreferences+Helpers.h"
 #import "Constants.h"
-#import "NSDictionary+DefaultsValue.h"
 #import "Note.h"
 
 # pragma mark - Interfaces
@@ -18,12 +19,14 @@
 
 @end
 
+HBPreferences *prefs;
 Note *noteView;
 UIButton *hideButton;
-NSDictionary *defaults;
 CGPoint initialCenter;
 
-# pragma mark - CSCoverSheetViewBase Hook
+# pragma mark - Tweak
+
+%group Tweak
 
 %hook CSCoverSheetViewBase
 
@@ -31,7 +34,6 @@ CGPoint initialCenter;
 	%orig;
 	if (!noteView) {
 		if ([self.superview isMemberOfClass:[%c(CSMainPageView) class]]) {
-			defaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.gabrielsiu.stickynoteprefs"];
 			[self setupNote];
 			[self setupHideButton];
 		}
@@ -42,9 +44,9 @@ CGPoint initialCenter;
 
 %new
 - (void)setupNote {
-	NSInteger width = [defaults intValueForKey:@"width" fallback:kDefaultNoteSize];
-	NSInteger height = [defaults intValueForKey:@"height" fallback:kDefaultNoteSize];
-	noteView = [[Note alloc] initWithFrame:CGRectMake(50, 50, width, height) defaults:defaults];
+	NSInteger width = [prefs nonZeroIntegerForKey:@"width" fallback:kDefaultNoteSize];
+	NSInteger height = [prefs nonZeroIntegerForKey:@"height" fallback:kDefaultNoteSize];
+	noteView = [[Note alloc] initWithFrame:CGRectMake(50, 50, width, height) prefs:prefs];
 
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
 	[noteView addGestureRecognizer:fingerDrag];
@@ -58,10 +60,8 @@ CGPoint initialCenter;
 	hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note.png"]] forState:UIControlStateNormal];
 
-	NSNumber *defaultsXOffset = [defaults valueForKey:@"xOffset"];
-	NSNumber *defaultsYOffset = [defaults valueForKey:@"yOffset"];
-	NSInteger xOffset = defaultsXOffset ? defaultsXOffset.intValue : 0;
-	NSInteger yOffset = defaultsYOffset ? defaultsYOffset.intValue : 0;
+	NSInteger xOffset = [([prefs objectForKey:@"xOffset"] ?: @0) intValue];
+	NSInteger yOffset = [([prefs objectForKey:@"yOffset"] ?: @0) intValue];
 	hideButton.frame = CGRectMake(xOffset, self.frame.size.height - 1.2*kIconSize - yOffset, 1.2*kIconSize, 1.2*kIconSize);
 
 	[hideButton addTarget:self action:@selector(didPressHideButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -72,22 +72,22 @@ CGPoint initialCenter;
 }
 
 
-#pragma mark Actions
+# pragma mark Actions
 
 %new
 - (void)didPressHideButton:(UIButton *)sender {
 	BOOL shouldHide = !noteView.isHidden;
 	double alphaValue;
-	if ([defaults boolValueForKey:@"useCustomAlpha" fallback:NO]) {
-		alphaValue = [defaults doubleValueForKey:@"alphaValue" fallback:kDefaultAlpha];
+	if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
+		alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
 	} else {
 		alphaValue = kDefaultAlpha;
 	}
 	CGFloat finalAlpha = shouldHide ? 0.0f : alphaValue;
 
 	NSTimeInterval duration;
-	if ([defaults boolValueForKey:@"useCustomDuration" fallback:NO]) {
-		duration = [defaults doubleValueForKey:@"customDuration" fallback:kDefaultAnimDuration];
+	if ([([prefs objectForKey:@"useCustomDuration"] ?: @(NO)) boolValue]) {
+		duration = [([prefs objectForKey:@"customDuration"] ?: @(kDefaultAnimDuration)) doubleValue];
 	} else {
 		duration = kDefaultAnimDuration;
 	}
@@ -130,3 +130,16 @@ CGPoint initialCenter;
 }
 
 %end
+
+%end
+
+# pragma mark - Initialization
+
+%ctor {
+	prefs = [[HBPreferences alloc] initWithIdentifier:@"com.gabrielsiu.stickynoteprefs"];
+	if (prefs) {
+		if ([([prefs objectForKey:@"isEnabled"] ?: @(YES)) boolValue]) {
+			%init(Tweak);
+		}
+	}
+}
