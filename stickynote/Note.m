@@ -58,11 +58,11 @@
 
 	// Setup 'Done' button on keyboard
 	UIToolbar *doneButtonView = [[UIToolbar alloc] init];
-    [doneButtonView sizeToFit];
+	[doneButtonView sizeToFit];
 	UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissKeyboard:)];
-    [doneButtonView setItems:[NSArray arrayWithObjects:flexibleSpace, doneButton, nil]];
-    textView.inputAccessoryView = doneButtonView;
+	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissKeyboard:)];
+	[doneButtonView setItems:[NSArray arrayWithObjects:flexibleSpace, doneButton, nil]];
+	textView.inputAccessoryView = doneButtonView;
 
 	[self addSubview:textView];
 }
