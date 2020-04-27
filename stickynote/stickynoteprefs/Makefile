@@ -8,7 +8,6 @@ StickyNotePrefs_FRAMEWORKS = UIKit
 StickyNotePrefs_PRIVATE_FRAMEWORKS = Preferences
 StickyNotePrefs_CFLAGS = -fobjc-arc
 StickyNotePrefs_EXTRA_FRAMEWORKS = CepheiPrefs
-StickyNotePrefs_LIBRARIES = colorpicker
 include $(THEOS_MAKE_PATH)/bundle.mk
 
 internal-stage::
