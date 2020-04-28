@@ -20,9 +20,15 @@
 # pragma mark - Setup
 
 - (void)setupStyle {
+	double alphaValue;
+	if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
+		alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
+	} else {
+		alphaValue = kDefaultAlpha;
+	}
 	// TODO: Fix colors
 	// BOOL useCustomColor = [defaults boolValueForKey:@"useCustomNoteColor" fallback:NO];
-	self.backgroundColor = [UIColor yellowColor];//useCustomColor ? [defaults colorValueForKey:@"noteColor" fallback:@"#ffff00"] : [UIColor yellowColor];
+	self.backgroundColor = [[UIColor yellowColor] colorWithAlphaComponent:alphaValue];//useCustomColor ? [defaults colorValueForKey:@"noteColor" fallback:@"#ffff00"] : [UIColor yellowColor];
 	if ([prefs valueExistsForKey:@"cornerRadius"]) {
 		self.layer.cornerRadius = [([prefs objectForKey:@"cornerRadius"] ?: @(kDefaultCornerRadius)) intValue];
 	} else {
@@ -32,13 +38,6 @@
 	self.layer.shadowOffset = CGSizeMake(-5, 5);
 	self.layer.shadowRadius = 5;
 	self.layer.shadowOpacity = 0.5;
-	double alphaValue;
-	if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
-		alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
-	} else {
-		alphaValue = kDefaultAlpha;
-	}
-	[self setAlpha:alphaValue];
 }
 
 - (void)setupClearButton {

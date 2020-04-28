@@ -62,15 +62,18 @@ CGPoint initialCenter;
 	hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note.png"]] forState:UIControlStateNormal];
 
-	NSInteger xOffset = [([prefs objectForKey:@"xOffset"] ?: @0) intValue];
-	NSInteger yOffset = [([prefs objectForKey:@"yOffset"] ?: @0) intValue];
-	hideButton.frame = CGRectMake(xOffset, self.frame.size.height - 1.2*kIconSize - yOffset, 1.2*kIconSize, 1.2*kIconSize);
-
 	[hideButton addTarget:self action:@selector(didPressHideButton:) forControlEvents:UIControlEventTouchUpInside];
 	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
 	[hideButton addGestureRecognizer:longPress];
 
 	[self addSubview:hideButton];
+	NSInteger xOffset = [([prefs objectForKey:@"xOffset"] ?: @0) intValue];
+	NSInteger yOffset = [([prefs objectForKey:@"yOffset"] ?: @0) intValue];
+	hideButton.translatesAutoresizingMaskIntoConstraints = NO;
+	[hideButton.widthAnchor constraintEqualToConstant:1.2f*kIconSize].active = YES;
+    [hideButton.heightAnchor constraintEqualToConstant:1.2f*kIconSize].active = YES;
+    [hideButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:xOffset].active = YES;
+    [hideButton.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-yOffset].active = YES;
 }
 
 
@@ -81,13 +84,13 @@ CGPoint initialCenter;
 	BOOL shouldHide = !noteView.isHidden;
 
 	// Determine final alpha value
-	double alphaValue;
-	if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
-		alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
-	} else {
-		alphaValue = kDefaultAlpha;
-	}
-	CGFloat finalAlpha = shouldHide ? 0.0f : alphaValue;
+	// double alphaValue;
+	// if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
+	// 	alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
+	// } else {
+	// 	alphaValue = kDefaultAlpha;
+	// }
+	// CGFloat finalAlpha = shouldHide ? 0.0f : alphaValue;
 
 	// Determine animation duration
 	NSTimeInterval duration;
@@ -124,7 +127,7 @@ CGPoint initialCenter;
 	if (!shouldHide && animationNum == 1) {
 		[UIView transitionWithView:noteView duration:duration options:UIViewAnimationOptionTransitionCurlDown animations:^{
 			[noteView setHidden:NO];
-			[noteView setAlpha:finalAlpha];
+			[noteView setAlpha:1.0f];
 		} completion:nil];
 		return;
 	}
@@ -136,7 +139,7 @@ CGPoint initialCenter;
 			[noteView setAlpha:0.01f];
 		} else {
 			[noteView setHidden:NO];
-			[noteView setAlpha:finalAlpha];
+			[noteView setAlpha:1.0f];
 		}
     } completion:^(BOOL finished) {
 		if (shouldHide) {
