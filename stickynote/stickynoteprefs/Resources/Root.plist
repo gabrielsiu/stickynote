@@ -179,14 +179,14 @@
 			<key>key</key>
 			<string>height</string>
 		</dict>
-		<!-- Hide Button -->
+		<!-- Show/Hide Button -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Hide Button</string>
+			<string>Show/Hide Button</string>
 			<key>footerText</key>
-        	<string>Tip: Long press on the hide button to re-center the note.</string>
+        	<string>Tip: Long press on the show/hide button to re-center the note.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -227,15 +227,39 @@
 			<key>label</key>
 			<string>Animations</string>
 			<key>footerText</key>
-			<string>Default duration for the hide animation is 0.20 seconds.</string>
+			<string>Default duration for the hide animation is 0.30 seconds.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSLinkCell</string>
+			<string>PSLinkListCell</string>
 			<key>detail</key>
-			<string>SNPAnimationsListController</string>
+			<string>PSListItemsController</string>
 			<key>label</key>
-			<string>Hide Animation</string>
+			<string>Show/Hide Animation</string>
+			<key>validTitles</key>
+			<array>
+				<string>Fade</string>
+				<string>Curl</string>
+				<string>Flip from Left</string>
+				<string>Flip from Right</string>
+				<string>Flip from Top</string>
+				<string>Flip from Bottom</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+				<string>3</string>
+				<string>4</string>
+				<string>5</string>
+			</array>
+			<key>default</key>
+			<string>Fade</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>animationType</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -259,7 +283,7 @@
 			<key>max</key>
 			<real>5.0</real>
 			<key>default</key>
-			<real>0.2</real>
+			<real>0.3</real>
 			<key>showValue</key>
 			<true/>
 			<key>defaults</key>

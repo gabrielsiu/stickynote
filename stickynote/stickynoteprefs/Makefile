@@ -2,7 +2,7 @@ include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = StickyNotePrefs
 
-StickyNotePrefs_FILES = SNPRootListController.m SNPAcknowledgementsController.m SNPAnimationsListController.m
+StickyNotePrefs_FILES = SNPRootListController.m SNPAcknowledgementsController.m
 StickyNotePrefs_INSTALL_PATH = /Library/PreferenceBundles
 StickyNotePrefs_FRAMEWORKS = UIKit
 StickyNotePrefs_PRIVATE_FRAMEWORKS = Preferences

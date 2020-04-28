@@ -46,7 +46,9 @@ CGPoint initialCenter;
 - (void)setupNote {
 	NSInteger width = [prefs nonZeroIntegerForKey:@"width" fallback:kDefaultNoteSize];
 	NSInteger height = [prefs nonZeroIntegerForKey:@"height" fallback:kDefaultNoteSize];
-	noteView = [[Note alloc] initWithFrame:CGRectMake(50, 50, width, height) prefs:prefs];
+	CGFloat noteX = (self.frame.size.width - width) / 2.0f;
+	CGFloat noteY = (self.frame.size.height - height) / 2.0f;
+	noteView = [[Note alloc] initWithFrame:CGRectMake(noteX, noteY, width, height) prefs:prefs];
 
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
 	[noteView addGestureRecognizer:fingerDrag];
@@ -77,6 +79,8 @@ CGPoint initialCenter;
 %new
 - (void)didPressHideButton:(UIButton *)sender {
 	BOOL shouldHide = !noteView.isHidden;
+
+	// Determine final alpha value
 	double alphaValue;
 	if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
 		alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
@@ -85,6 +89,7 @@ CGPoint initialCenter;
 	}
 	CGFloat finalAlpha = shouldHide ? 0.0f : alphaValue;
 
+	// Determine animation duration
 	NSTimeInterval duration;
 	if ([([prefs objectForKey:@"useCustomDuration"] ?: @(NO)) boolValue]) {
 		duration = [([prefs objectForKey:@"customDuration"] ?: @(kDefaultAnimDuration)) doubleValue];
@@ -92,11 +97,51 @@ CGPoint initialCenter;
 		duration = kDefaultAnimDuration;
 	}
 
-	if (!shouldHide) { [noteView setHidden:NO]; }
-	[UIView animateWithDuration:duration animations:^{
-		[noteView setAlpha:finalAlpha];
-	} completion:^(BOOL finished) {
-		if (shouldHide) { [noteView setHidden:YES]; }
+	// Determine animation type
+	NSInteger animationNum = [([prefs objectForKey:@"animationType"] ?: @0) intValue];
+	UIViewAnimationOptions animationType;
+	switch (animationNum) {
+		case 1:
+			animationType = UIViewAnimationOptionTransitionCurlUp;
+			break;
+		case 2:
+			animationType = UIViewAnimationOptionTransitionFlipFromLeft;
+			break;
+		case 3:
+			animationType = UIViewAnimationOptionTransitionFlipFromRight;
+			break;
+		case 4:
+			animationType = UIViewAnimationOptionTransitionFlipFromTop;
+			break;
+		case 5:
+			animationType = UIViewAnimationOptionTransitionFlipFromBottom;
+			break;
+		default:
+			animationType = UIViewAnimationOptionTransitionCrossDissolve;
+	}
+
+	// If Curl animation is selected, use the curlDown animation for showing the note
+	if (!shouldHide && animationNum == 1) {
+		[UIView transitionWithView:noteView duration:duration options:UIViewAnimationOptionTransitionCurlDown animations:^{
+			[noteView setHidden:NO];
+			[noteView setAlpha:finalAlpha];
+		} completion:nil];
+		return;
+	}
+
+	// Show/Hide Animation
+	[UIView transitionWithView:noteView duration:duration options:animationType animations:^{
+		if (shouldHide) {
+			// Unable to animate the hiding of a view using transitionWithView, so just animate the transition to a small alpha value, then hide it after
+			[noteView setAlpha:0.01f];
+		} else {
+			[noteView setHidden:NO];
+			[noteView setAlpha:finalAlpha];
+		}
+    } completion:^(BOOL finished) {
+		if (shouldHide) {
+			[noteView setHidden:YES];
+		}
 	}];
 }
 
