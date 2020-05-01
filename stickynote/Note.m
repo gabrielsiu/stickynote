@@ -66,6 +66,12 @@
 	[doneButtonView setItems:[NSArray arrayWithObjects:flexibleSpace, doneButton, nil]];
 	textView.inputAccessoryView = doneButtonView;
 
+	NSData *noteTextData = [[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_text"];
+	if (noteTextData) {
+		NSString *savedText = [NSKeyedUnarchiver unarchiveObjectWithData:noteTextData];
+		textView.text = savedText;
+	}
+
 	[self addSubview:textView];
 }
 
@@ -73,6 +79,7 @@
 
 - (void)dismissKeyboard:(UIButton *)sender {
 	[textView resignFirstResponder];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:textView.text] forKey:@"stickynote_text"];
 }
 
 - (void)clearTextView:(UIButton *)sender {

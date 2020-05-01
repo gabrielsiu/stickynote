@@ -83,15 +83,6 @@ CGPoint initialCenter;
 - (void)didPressHideButton:(UIButton *)sender {
 	BOOL shouldHide = !noteView.isHidden;
 
-	// Determine final alpha value
-	// double alphaValue;
-	// if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
-	// 	alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
-	// } else {
-	// 	alphaValue = kDefaultAlpha;
-	// }
-	// CGFloat finalAlpha = shouldHide ? 0.0f : alphaValue;
-
 	// Determine animation duration
 	NSTimeInterval duration;
 	if ([([prefs objectForKey:@"useCustomDuration"] ?: @(NO)) boolValue]) {
