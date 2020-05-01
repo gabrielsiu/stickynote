@@ -1,9 +1,17 @@
 #import <Cephei/HBPreferences.h>
-#import "HBPreferences+Helpers.h"
 #import "Constants.h"
+#import "HBPreferences+Helpers.h"
 #import "Note.h"
+#import "NoteViewController.h"
 
 # pragma mark - Interfaces
+
+@interface SBLockStateAggregator : NSObject
+
++ (id)sharedInstance;
+- (unsigned long long)lockState;
+
+@end
 
 @interface SBFTouchPassThroughView : UIView
 @end
@@ -20,7 +28,7 @@
 @end
 
 HBPreferences *prefs;
-Note *noteView;
+NoteViewController *noteVC;
 UIButton *hideButton;
 CGPoint initialCenter;
 
@@ -32,7 +40,7 @@ CGPoint initialCenter;
 
 - (void)didMoveToSuperview {
 	%orig;
-	if (!noteView) {
+	if (!noteVC) {
 		if ([self.superview isMemberOfClass:[%c(CSMainPageView) class]]) {
 			[self setupNote];
 			[self setupHideButton];
@@ -44,21 +52,18 @@ CGPoint initialCenter;
 
 %new
 - (void)setupNote {
-	NSInteger width = [prefs nonZeroIntegerForKey:@"width" fallback:kDefaultNoteSize];
-	NSInteger height = [prefs nonZeroIntegerForKey:@"height" fallback:kDefaultNoteSize];
-	CGFloat noteX = (self.frame.size.width - width) / 2.0f;
-	CGFloat noteY = (self.frame.size.height - height) / 2.0f;
-	noteView = [[Note alloc] initWithFrame:CGRectMake(noteX, noteY, width, height) prefs:prefs];
+	BOOL locked = [[%c(SBLockStateAggregator) sharedInstance] lockState] != 0;
+	noteVC = [[NoteViewController alloc] initWithPrefs:prefs screenSize:self.frame.size locked:locked];
 
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
-	[noteView addGestureRecognizer:fingerDrag];
+	[noteVC.noteView addGestureRecognizer:fingerDrag];
 
-	[self addSubview:noteView];
+	[self addSubview:noteVC.noteView];
 }
 
 %new
 - (void)setupHideButton {
-	if (!noteView) { return; }
+	if (!noteVC.noteView) { return; }
 	hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[hideButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-note.png"]] forState:UIControlStateNormal];
 
@@ -81,7 +86,7 @@ CGPoint initialCenter;
 
 %new
 - (void)didPressHideButton:(UIButton *)sender {
-	BOOL shouldHide = !noteView.isHidden;
+	BOOL shouldHide = !noteVC.noteView.isHidden;
 
 	// Determine animation duration
 	NSTimeInterval duration;
@@ -116,25 +121,25 @@ CGPoint initialCenter;
 
 	// If Curl animation is selected, use the curlDown animation for showing the note
 	if (!shouldHide && animationNum == 1) {
-		[UIView transitionWithView:noteView duration:duration options:UIViewAnimationOptionTransitionCurlDown animations:^{
-			[noteView setHidden:NO];
-			[noteView setAlpha:1.0f];
+		[UIView transitionWithView:noteVC.noteView duration:duration options:UIViewAnimationOptionTransitionCurlDown animations:^{
+			[noteVC.noteView setHidden:NO];
+			[noteVC.noteView setAlpha:1.0f];
 		} completion:nil];
 		return;
 	}
 
 	// Show/Hide Animation
-	[UIView transitionWithView:noteView duration:duration options:animationType animations:^{
+	[UIView transitionWithView:noteVC.noteView duration:duration options:animationType animations:^{
 		if (shouldHide) {
 			// Unable to animate the hiding of a view using transitionWithView, so just animate the transition to a small alpha value, then hide it after
-			[noteView setAlpha:0.01f];
+			[noteVC.noteView setAlpha:0.01f];
 		} else {
-			[noteView setHidden:NO];
-			[noteView setAlpha:1.0f];
+			[noteVC.noteView setHidden:NO];
+			[noteVC.noteView setAlpha:1.0f];
 		}
     } completion:^(BOOL finished) {
 		if (shouldHide) {
-			[noteView setHidden:YES];
+			[noteVC.noteView setHidden:YES];
 		}
 	}];
 }
@@ -163,7 +168,7 @@ CGPoint initialCenter;
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateBegan) {
 		[UIView animateWithDuration:0.3f animations:^{
-			noteView.center = CGPointMake(noteView.superview.frame.size.width / 2, noteView.superview.frame.size.height / 2);
+			noteVC.noteView.center = CGPointMake(noteVC.noteView.superview.frame.size.width / 2, noteVC.noteView.superview.frame.size.height / 2);
 		} completion:NULL];
 	}
 }

@@ -6,13 +6,21 @@
 
 # pragma mark - Initialization
 
-- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences {
+- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences locked:(BOOL)locked {
 	self = [super initWithFrame:frame];
 	if (self) {
+		deviceIsLocked = locked;
 		prefs = preferences;
 		[self setupStyle];
 		[self setupClearButton];
 		[self setupTextView];
+
+		if (deviceIsLocked) {
+			[self setupPrivacyView];
+			[clearButton setHidden:YES];
+		} else {
+			[self restoreSavedText];
+		}
 	}
 	return self;
 }
@@ -43,9 +51,13 @@
 - (void)setupClearButton {
 	clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[clearButton setImage:[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-clear.png"]] forState:UIControlStateNormal];
-	clearButton.frame = CGRectMake(self.frame.size.width - kIconSize, 0, kIconSize, kIconSize);
 	[clearButton addTarget:self action:@selector(clearTextView:) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:clearButton];
+	clearButton.translatesAutoresizingMaskIntoConstraints = NO;
+	[clearButton.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+	[clearButton.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
+	[clearButton.widthAnchor constraintEqualToConstant:kIconSize].active = YES;
+	[clearButton.heightAnchor constraintEqualToConstant:kIconSize].active = YES;
 }
 
 
@@ -66,24 +78,50 @@
 	[doneButtonView setItems:[NSArray arrayWithObjects:flexibleSpace, doneButton, nil]];
 	textView.inputAccessoryView = doneButtonView;
 
+	[self addSubview:textView];
+}
+
+- (void)restoreSavedText {
 	NSData *noteTextData = [[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_text"];
 	if (noteTextData) {
 		NSString *savedText = [NSKeyedUnarchiver unarchiveObjectWithData:noteTextData];
 		textView.text = savedText;
 	}
+}
 
-	[self addSubview:textView];
+- (void)setupPrivacyView {
+	privacyView = [[UIView alloc] initWithFrame:self.bounds];
+	privacyView.backgroundColor = [UIColor clearColor];
+
+	UIImage *lockIcon = [UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-clear.png"]];
+	UIImageView *lockIconView = [[UIImageView alloc] initWithImage:lockIcon];
+	[privacyView addSubview:lockIconView];
+	lockIconView.translatesAutoresizingMaskIntoConstraints = NO;
+	[lockIconView.centerXAnchor constraintEqualToAnchor:privacyView.centerXAnchor].active = YES;
+	[lockIconView.centerYAnchor constraintEqualToAnchor:privacyView.centerYAnchor].active = YES;
+	[lockIconView.widthAnchor constraintEqualToConstant:2*kIconSize].active = YES;
+	[lockIconView.heightAnchor constraintEqualToConstant:2*kIconSize].active = YES;
+	
+	[self addSubview:privacyView];
+}
+
+- (void)setTextViewDelegate:(id)delegate {
+	textView.delegate = delegate;
 }
 
 # pragma mark - Actions
 
+- (void)saveText {
+	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:textView.text] forKey:@"stickynote_text"];
+}
+
 - (void)dismissKeyboard:(UIButton *)sender {
 	[textView resignFirstResponder];
-	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:textView.text] forKey:@"stickynote_text"];
 }
 
 - (void)clearTextView:(UIButton *)sender {
 	textView.text = @"";
+	[self saveText];
 }
 
 @end
