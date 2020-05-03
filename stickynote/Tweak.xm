@@ -22,6 +22,7 @@
 
 - (void)setupNote;
 - (void)setupHideButton;
+- (void)setupPrivacyView;
 - (void)didPressHideButton:(UIButton *)sender;
 - (void)handleDrag:(UIPanGestureRecognizer *)sender;
 
@@ -31,6 +32,10 @@ HBPreferences *prefs;
 NoteViewController *noteVC;
 UIButton *hideButton;
 CGPoint initialCenter;
+
+// This boolean determines whether or not the Darwin notifications will be observed
+// Initially set to NO, if a device passcode is enabled (determined during initilization) then it will be set to YES
+BOOL passcodeEnabled = NO;
 
 # pragma mark - Tweak
 
@@ -44,6 +49,16 @@ CGPoint initialCenter;
 		if ([self.superview isMemberOfClass:[%c(CSMainPageView) class]]) {
 			[self setupNote];
 			[self setupHideButton];
+
+			// If the device is secured with a passcode, enable the Darwin notifications
+			if ([[%c(SBLockStateAggregator) sharedInstance] lockState] != 0) {
+				passcodeEnabled = YES;
+			} else {
+				// Else, hide the privacy view and remove the observers
+				[noteVC.noteView hidePrivacyView];
+				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.DeviceLockStatusChanged"), NULL);
+				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.hasBlankedScreen"), NULL);
+			}
 		}
 	}
 }
@@ -52,12 +67,9 @@ CGPoint initialCenter;
 
 %new
 - (void)setupNote {
-	BOOL locked = [[%c(SBLockStateAggregator) sharedInstance] lockState] != 0;
-	noteVC = [[NoteViewController alloc] initWithPrefs:prefs screenSize:self.frame.size locked:locked];
-
+	noteVC = [[NoteViewController alloc] initWithPrefs:prefs screenSize:self.frame.size];
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];
 	[noteVC.noteView addGestureRecognizer:fingerDrag];
-
 	[self addSubview:noteVC.noteView];
 }
 
@@ -80,7 +92,6 @@ CGPoint initialCenter;
     [hideButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:xOffset].active = YES;
     [hideButton.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-yOffset].active = YES;
 }
-
 
 # pragma mark Actions
 
@@ -173,6 +184,22 @@ CGPoint initialCenter;
 	}
 }
 
+# pragma mark - Darwin Notification Callbacks
+
+static void deviceLockStatusChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	// This callback only gets called when the actual lock status of the device changes (locked<->unlocked)
+	// This callback will not get called at all if the device is not secured with a passcode
+	[noteVC.noteView hidePrivacyView];
+}
+
+static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	// This callback gets called whenever the device screen turns on or off
+	// Additionally, this callback gets called after a respring
+	if (passcodeEnabled) {
+		[noteVC.noteView showPrivacyView];
+	}
+}
+
 %end
 
 %end
@@ -183,6 +210,11 @@ CGPoint initialCenter;
 	prefs = [[HBPreferences alloc] initWithIdentifier:@"com.gabrielsiu.stickynoteprefs"];
 	if (prefs) {
 		if ([([prefs objectForKey:@"isEnabled"] ?: @(YES)) boolValue]) {
+			// Add Darwin notification observers if privacy mode is enabled
+			if ([([prefs objectForKey:@"usePrivacyMode"] ?: @(NO)) boolValue]) {
+				CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, deviceLockStatusChanged, CFSTR("com.apple.springboard.DeviceLockStatusChanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+				CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, hasBlankedScreen, CFSTR("com.apple.springboard.hasBlankedScreen"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+			}
 			%init(Tweak);
 		}
 	}

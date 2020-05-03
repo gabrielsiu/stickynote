@@ -6,7 +6,7 @@
 
 # pragma mark - Initialization
 
-- (id)initWithPrefs:(HBPreferences *)preferences screenSize:(CGSize)size locked:(BOOL)locked {
+- (id)initWithPrefs:(HBPreferences *)preferences screenSize:(CGSize)size {
 	self = [super initWithNibName:nil bundle:nil];
 	if (self) {
 		NSInteger width = [preferences nonZeroIntegerForKey:@"width" fallback:kDefaultNoteSize];
@@ -14,7 +14,7 @@
 		CGFloat noteX = (size.width - width) / 2.0f;
 		CGFloat noteY = (size.height - height) / 2.0f;
 
-		self.noteView = [[Note alloc] initWithFrame:CGRectMake(noteX, noteY, width, height) prefs:preferences locked:locked];
+		self.noteView = [[Note alloc] initWithFrame:CGRectMake(noteX, noteY, width, height) prefs:preferences];
 		if (self.noteView) {
 			[self.noteView setTextViewDelegate:self];
 		}

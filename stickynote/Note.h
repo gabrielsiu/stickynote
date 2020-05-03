@@ -4,12 +4,13 @@
     UIButton *clearButton;
     UITextView *textView;
     HBPreferences *prefs;
-    BOOL deviceIsLocked;
     UIView *privacyView;
 }
 
-- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences locked:(BOOL)locked;
+- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences;
 - (void)setTextViewDelegate:(id)delegate;
 - (void)saveText;
+- (void)hidePrivacyView;
+- (void)showPrivacyView;
 
 @end

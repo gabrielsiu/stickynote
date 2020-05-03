@@ -118,18 +118,14 @@
 			<string>Sizing</string>
 		</dict>
 		<dict>
-			<key>cellClass</key>
-			<string>HBStepperTableCell</string>
-			<key>default</key>
-			<real>20</real>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
 			<key>label</key>
-			<string>Font Size: %i</string>
-			<key>min</key>
-			<real>10</real>
-			<key>max</key>
-			<real>72</real>
-			<key>singularLabel</key>
-			<string>Font Size: 1</string>
+			<string>Font Size:</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>placeholder</key>
+			<string>20</string>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
@@ -186,7 +182,7 @@
 			<key>label</key>
 			<string>Show/Hide Button</string>
 			<key>footerText</key>
-        	<string>Tip: Long press on the show/hide button to re-center the note.</string>
+        	<string>Tip: Long press on the show/hide button to reset the position of the note.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -227,7 +223,7 @@
 			<key>label</key>
 			<string>Animations</string>
 			<key>footerText</key>
-			<string>Default duration for the hide animation is 0.30 seconds.</string>
+			<string>Default animation duration is 0.30 seconds.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -293,12 +289,41 @@
 			<key>id</key>
 			<string>durationCell</string>
 		</dict>
+		<!-- Security -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Security</string>
+			<key>footerText</key>
+			<string>Enable Privacy Mode to hide the contents of the sticky note when the device is locked.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Privacy Mode</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>usePrivacyMode</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Note: If you don't see the privacy view after respringing your device, unlock &amp; lock your device once.</string>
+		</dict>
 		<!-- About/Acknowledgements -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>About</string>
+			<key>footerText</key>
+			<string>Follow me on Twitter for support or for updates about my tweaks.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
