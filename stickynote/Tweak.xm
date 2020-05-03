@@ -1,3 +1,5 @@
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 #import <Cephei/HBPreferences.h>
 #import "Constants.h"
 #import "HBPreferences+Helpers.h"
@@ -16,6 +18,8 @@
 @interface SBFTouchPassThroughView : UIView
 @end
 
+# pragma mark iOS 13
+
 @interface CSCoverSheetViewBase : SBFTouchPassThroughView
 
 - (void)didMoveToSuperview;
@@ -28,6 +32,14 @@
 
 @end
 
+# pragma mark iOS 12
+
+@interface SBDashBoardViewBase : SBFTouchPassThroughView
+- (void)didMoveToSuperview;
+@end
+
+# pragma mark - Properties
+
 HBPreferences *prefs;
 NoteViewController *noteVC;
 UIButton *hideButton;
@@ -37,10 +49,9 @@ CGPoint initialCenter;
 // Initially set to NO, if a device passcode is enabled (determined during initilization) then it will be set to YES
 BOOL passcodeEnabled = NO;
 
-# pragma mark - Tweak
+# pragma mark - iOS 13
 
-%group Tweak
-
+%group iOS13
 %hook CSCoverSheetViewBase
 
 - (void)didMoveToSuperview {
@@ -184,6 +195,26 @@ BOOL passcodeEnabled = NO;
 	}
 }
 
+%end
+%end
+
+# pragma mark - iOS 12
+
+%group iOS12
+%hook SBDashBoardViewBase
+
+- (void)didMoveToSuperview {
+	%orig;
+	if ([self.superview isMemberOfClass:[%c(SBDashBoardMainPageView) class]]) {
+		UIView *square = [[UIView alloc] initWithFrame:CGRectMake(101, 110, 100, 100)];
+		square.backgroundColor = [UIColor greenColor];
+		[self addSubview:square];
+	}
+}
+
+%end
+%end
+
 # pragma mark - Darwin Notification Callbacks
 
 static void deviceLockStatusChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -200,10 +231,6 @@ static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFS
 	}
 }
 
-%end
-
-%end
-
 # pragma mark - Initialization
 
 %ctor {
@@ -215,7 +242,11 @@ static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFS
 				CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, deviceLockStatusChanged, CFSTR("com.apple.springboard.DeviceLockStatusChanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 				CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, hasBlankedScreen, CFSTR("com.apple.springboard.hasBlankedScreen"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 			}
-			%init(Tweak);
+			if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0")) {
+				%init(iOS13);
+			} else {
+				%init(iOS12);
+			}
 		}
 	}
 }
