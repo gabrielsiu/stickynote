@@ -4,7 +4,7 @@
 
 @implementation Note
 
-# pragma mark - Initialization
+#pragma mark - Initialization
 
 - (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences {
 	self = [super initWithFrame:frame];
@@ -18,7 +18,7 @@
 	return self;
 }
 
-# pragma mark - Setup
+#pragma mark - Setup
 
 - (void)setupStyle {
 	double alphaValue;
@@ -114,7 +114,7 @@
 	textView.delegate = delegate;
 }
 
-# pragma mark - Actions
+#pragma mark - Actions
 
 - (void)saveText {
 	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:textView.text] forKey:@"stickynote_text"];

@@ -4,7 +4,7 @@
 
 @implementation NoteViewController
 
-# pragma mark - Initialization
+#pragma mark - Initialization
 
 - (id)initWithPrefs:(HBPreferences *)preferences screenSize:(CGSize)size {
 	self = [super initWithNibName:nil bundle:nil];
@@ -22,7 +22,7 @@
 	return self;
 }
 
-# pragma mark - UITextView Delegate Methods
+#pragma mark - UITextView Delegate Methods
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 	[self.noteView saveText];
