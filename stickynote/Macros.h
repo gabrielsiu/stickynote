@@ -24,9 +24,9 @@
 	NSInteger yOffset = [([prefs objectForKey:@"yOffset"] ?: @0) intValue];\
 	hideButton.translatesAutoresizingMaskIntoConstraints = NO;\
 	[hideButton.widthAnchor constraintEqualToConstant:1.2f*kIconSize].active = YES;\
-    [hideButton.heightAnchor constraintEqualToConstant:1.2f*kIconSize].active = YES;\
-    [hideButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:xOffset].active = YES;\
-    [hideButton.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-yOffset].active = YES;\
+	[hideButton.heightAnchor constraintEqualToConstant:1.2f*kIconSize].active = YES;\
+	[hideButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:xOffset].active = YES;\
+	[hideButton.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-yOffset].active = YES;\
 })
 
 #pragma mark - Actions
@@ -78,7 +78,7 @@
 			[noteVC.noteView setHidden:NO];\
 			[noteVC.noteView setAlpha:1.0f];\
 		}\
-    } completion:^(BOOL finished) {\
+	} completion:^(BOOL finished) {\
 		if (shouldHide)\
 			[noteVC.noteView setHidden:YES];\
 	}];\

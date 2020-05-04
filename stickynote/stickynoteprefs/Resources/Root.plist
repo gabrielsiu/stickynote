@@ -182,7 +182,7 @@
 			<key>label</key>
 			<string>Show/Hide Button</string>
 			<key>footerText</key>
-        	<string>Tip: Long press on the show/hide button to reset the position of the note.</string>
+			<string>Tip: Long press on the show/hide button to reset the position of the note.</string>
 		</dict>
 		<dict>
 			<key>cell</key>

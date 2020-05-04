@@ -1,10 +1,10 @@
 #import <Cephei/HBPreferences.h>
 
 @interface Note : UIView {
-    UIButton *clearButton;
-    UITextView *textView;
-    HBPreferences *prefs;
-    UIView *privacyView;
+	UIButton *clearButton;
+	UITextView *textView;
+	HBPreferences *prefs;
+	UIView *privacyView;
 }
 
 - (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences;
