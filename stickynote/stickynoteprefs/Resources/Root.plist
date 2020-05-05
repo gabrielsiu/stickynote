@@ -369,6 +369,12 @@
 			<key>id</key>
 			<string>durationCell</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Changes to the animations do not require a respring to take effect.</string>
+		</dict>
 		<!-- Security -->
 		<dict>
 			<key>cell</key>
@@ -395,6 +401,23 @@
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>Note: If you don't see the privacy view after respringing your device, unlock &amp; lock your device once.</string>
+		</dict>
+		<!-- Respring -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Respring</string>
+			<key>footerText</key>
+			<string>Please respring to apply any changes (besides changes to the animations).</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Respring</string>
+			<key>action</key>
+			<string>respring</string>
 		</dict>
 		<!-- About/Acknowledgements -->
 		<dict>

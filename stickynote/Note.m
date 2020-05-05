@@ -94,6 +94,7 @@
 	[doneButtonView setItems:[NSArray arrayWithObjects:flexibleSpace, doneButton, nil]];
 	textView.inputAccessoryView = doneButtonView;
 
+	[self restoreSavedText];
 	[self addSubview:textView];
 }
 
@@ -123,6 +124,7 @@
 	[lockIconView.heightAnchor constraintEqualToConstant:2*kIconSize].active = YES;
 	
 	[self addSubview:privacyView];
+	[privacyView setHidden:YES];
 }
 
 - (void)restoreSavedText {
