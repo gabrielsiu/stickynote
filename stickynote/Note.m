@@ -11,7 +11,7 @@
 	if (self) {
 		prefs = preferences;
 		[self setupStyle];
-		[self setupClearButton];
+		[self setupButtons];
 		[self setupTextView];
 		[self setupPrivacyView];
 	}
@@ -46,23 +46,49 @@
 	self.layer.shadowOpacity = 0.5;
 }
 
-- (void)setupClearButton {
-	clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[clearButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-clear.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+- (void)setupButtons {
+	// Determine custom icon color, if chosen
 	UIColor *iconColor;
 	if ([([prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
 		iconColor = [self colorForKey:@"fontColor" fallbackNum:0];
 	} else {
 		iconColor = UIColor.blackColor;
 	}
-	clearButton.imageView.tintColor = iconColor;
-	[clearButton addTarget:self action:@selector(clearTextView:) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview:clearButton];
+
+	// Set up navigation bar for the buttons
+	buttonsBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, kIconSize)];
+	buttonsBar.tintColor = iconColor;
+
+	// Make navigation bar transparent
+	[buttonsBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+	buttonsBar.shadowImage = [UIImage new];
+	buttonsBar.translucent = YES;
+	UINavigationItem *buttonsItem = [[UINavigationItem alloc] init];
+
+	// Set up share button
+	UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[shareButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-share.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+	[shareButton addTarget:self action:@selector(didPressShareButton:) forControlEvents:UIControlEventTouchUpInside];
+	shareButton.translatesAutoresizingMaskIntoConstraints = NO;
+	[shareButton.widthAnchor constraintEqualToConstant:kIconSize].active = YES;
+	[shareButton.heightAnchor constraintEqualToConstant:kIconSize].active = YES;
+
+	// Set up clear button
+	UIButton *clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[clearButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-clear.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+	[clearButton addTarget:self action:@selector(didPressClearButton:) forControlEvents:UIControlEventTouchUpInside];
 	clearButton.translatesAutoresizingMaskIntoConstraints = NO;
-	[clearButton.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-	[clearButton.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
 	[clearButton.widthAnchor constraintEqualToConstant:kIconSize].active = YES;
 	[clearButton.heightAnchor constraintEqualToConstant:kIconSize].active = YES;
+
+	// Add the buttons to the navigation bar
+	self.shareButtonItem = [[UIBarButtonItem alloc] initWithCustomView:shareButton];
+	self.clearButtonItem = [[UIBarButtonItem alloc] initWithCustomView:clearButton];
+	buttonsItem.leftBarButtonItem = self.shareButtonItem;
+	buttonsItem.rightBarButtonItem = self.clearButtonItem;
+	buttonsBar.items = @[buttonsItem];
+
+	[self addSubview:buttonsBar];
 }
 
 
@@ -141,28 +167,42 @@
 
 #pragma mark - Actions
 
-- (void)saveText {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:textView.text] forKey:@"stickynote_text"];
+- (void)didPressShareButton:(UIButton *)sender {
+	[self.delegate didPressShareButton:self];
+}
+
+- (void)didPressClearButton:(UIButton *)sender {
+	[self.delegate didPressClearButton:self];
 }
 
 - (void)dismissKeyboard:(UIButton *)sender {
 	[textView resignFirstResponder];
 }
 
-- (void)clearTextView:(UIButton *)sender {
+#pragma mark - Public Methods
+
+- (void)saveText {
+	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:textView.text] forKey:@"stickynote_text"];
+}
+
+- (void)clearTextView {
 	textView.text = @"";
 	[self saveText];
 }
 
+- (NSString *)getText {
+	return textView.text;
+}
+
 - (void)hidePrivacyView {
 	[self restoreSavedText];
-	[clearButton setHidden:NO];
+	[buttonsBar setHidden:NO];
 	[privacyView setHidden:YES];
 }
 
 - (void)showPrivacyView {
 	textView.text = @"";
-	[clearButton setHidden:YES];
+	[buttonsBar setHidden:YES];
 	[privacyView setHidden:NO];
 }
 

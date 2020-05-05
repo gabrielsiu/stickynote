@@ -25,6 +25,7 @@
 		self.noteView = [[Note alloc] initWithFrame:CGRectMake(position.x, position.y, width, height) prefs:preferences];
 		if (self.noteView) {
 			[self.noteView setTextViewDelegate:self];
+			self.noteView.delegate = self;
 
 			// Restore hidden status of note
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stickynote_hidden"] ?: NO) {
@@ -39,6 +40,46 @@
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 	[self.noteView saveText];
+}
+
+#pragma mark - ButtonActionDelegate Methods
+
+- (void)didPressShareButton:(Note *)sender {
+	
+	NSArray *items = @[[self.noteView getText]];
+	UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+	
+	// Make the presentation a popover for iPads
+	controller.modalPresentationStyle = UIModalPresentationPopover;
+	UIPopoverPresentationController *popController = [controller popoverPresentationController];
+	popController.barButtonItem = self.noteView.shareButtonItem;
+	[self presentViewController:controller animated:YES completion:nil];
+
+	controller.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *error) {
+		if (error) {
+			NSString *errorMessage = [NSString stringWithFormat: @"%@, %@", error.localizedDescription, error.localizedFailureReason];
+			UIAlertController* alertController = [UIAlertController alertControllerWithTitle:@"Error sharing Note" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+			UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+			[alertController addAction:okAction];
+			[self presentViewController:alertController animated:YES completion:nil];
+		}
+	};
+}
+
+- (void)didPressClearButton:(Note *)sender {
+	UIAlertController* alertController = [UIAlertController alertControllerWithTitle:@"Clear Note" message:@"The contents of the note will be cleared. This action cannot be undone." preferredStyle:UIAlertControllerStyleActionSheet];
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+	UIAlertAction* clearAction = [UIAlertAction actionWithTitle:@"Clear Note" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
+		[self.noteView clearTextView];
+	}];
+	[alertController addAction:cancelAction];
+	[alertController addAction:clearAction];
+
+	// Make the presentation a popover for iPads
+	alertController.modalPresentationStyle = UIModalPresentationPopover;
+	UIPopoverPresentationController *popController = [alertController popoverPresentationController];
+	popController.barButtonItem = self.noteView.clearButtonItem;
+	[self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

@@ -9,6 +9,7 @@
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];\
 	[noteVC.noteView addGestureRecognizer:fingerDrag];\
 	[self addSubview:noteVC.noteView];\
+	[[self _viewControllerForAncestor] addChildViewController:noteVC];\
 })
 
 #define SETUP_HIDE_BUTTON() ({\

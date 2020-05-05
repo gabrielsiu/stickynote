@@ -18,6 +18,7 @@
 
 @interface CSCoverSheetViewBase : SBFTouchPassThroughView
 
+- (UIViewController *)_viewControllerForAncestor;
 - (void)didMoveToSuperview;
 
 - (void)didPressHideButton:(UIButton *)sender;
@@ -30,6 +31,7 @@
 
 @interface SBDashBoardViewBase : SBFTouchPassThroughView
 
+- (UIViewController *)_viewControllerForAncestor;
 - (void)didMoveToSuperview;
 
 - (void)didPressHideButton:(UIButton *)sender;
