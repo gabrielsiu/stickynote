@@ -11,12 +11,25 @@
 	if (self) {
 		NSInteger width = [preferences nonZeroIntegerForKey:@"width" fallback:kDefaultNoteSize];
 		NSInteger height = [preferences nonZeroIntegerForKey:@"height" fallback:kDefaultNoteSize];
-		CGFloat noteX = (size.width - width) / 2.0f;
-		CGFloat noteY = (size.height - height) / 2.0f;
+		
+		NSString *savedPosition = [[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_position"];
+		CGPoint position;
+		if (savedPosition) {
+			// Restore note to previous position
+			position = CGPointFromString(savedPosition);
+		} else {
+			// Initialize note in the center of the screen if no position was saved
+			position = CGPointMake((size.width - width) / 2.0f, (size.height - height) / 2.0f);
+		}
 
-		self.noteView = [[Note alloc] initWithFrame:CGRectMake(noteX, noteY, width, height) prefs:preferences];
+		self.noteView = [[Note alloc] initWithFrame:CGRectMake(position.x, position.y, width, height) prefs:preferences];
 		if (self.noteView) {
 			[self.noteView setTextViewDelegate:self];
+
+			// Restore hidden status of note
+			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stickynote_hidden"] ?: NO) {
+				[self.noteView setHidden:YES];
+			}
 		}
 	}
 	return self;

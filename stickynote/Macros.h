@@ -66,7 +66,9 @@
 		[UIView transitionWithView:noteVC.noteView duration:duration options:UIViewAnimationOptionTransitionCurlDown animations:^{\
 			[noteVC.noteView setHidden:NO];\
 			[noteVC.noteView setAlpha:1.0f];\
-		} completion:nil];\
+		} completion:^(BOOL finished) {\
+			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"stickynote_hidden"];\
+		}];\
 		return;\
 	}\
 	/* Show/Hide Animation */\
@@ -79,6 +81,7 @@
 			[noteVC.noteView setAlpha:1.0f];\
 		}\
 	} completion:^(BOOL finished) {\
+		[[NSUserDefaults standardUserDefaults] setBool:shouldHide forKey:@"stickynote_hidden"];\
 		if (shouldHide)\
 			[noteVC.noteView setHidden:YES];\
 	}];\
@@ -93,6 +96,8 @@
 	CGPoint translation = [sender translationInView:noteView.superview];\
 	if (sender.state == UIGestureRecognizerStateBegan)\
 		initialCenter = noteView.center;\
+	if (sender.state == UIGestureRecognizerStateEnded)\
+		[[NSUserDefaults standardUserDefaults] setObject:NSStringFromCGPoint(CGPointMake(noteView.frame.origin.x, noteView.frame.origin.y)) forKey:@"stickynote_position"];\
 	if (sender.state != UIGestureRecognizerStateCancelled)\
 		noteView.center = CGPointMake(initialCenter.x + translation.x, initialCenter.y + translation.y);\
 	else\

@@ -248,8 +248,6 @@
 			<true/>
 			<key>placeholder</key>
 			<string>250</string>
-			<key>bestGuess</key>
-			<string>250</string>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
