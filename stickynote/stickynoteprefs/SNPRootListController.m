@@ -87,8 +87,10 @@
 
 - (void)respring {
 	pid_t pid;
-	const char* args[] = {"killall", "-9", "backboardd", NULL};
-	posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
+	int status;
+	const char* argv[] = {"sbreload", NULL};
+	posix_spawn(&pid, "/usr/bin/sbreload", NULL, NULL, (char* const*)argv, NULL);
+	waitpid(pid, &status, WEXITED);
 }
 
 @end

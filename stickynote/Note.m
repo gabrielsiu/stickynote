@@ -67,7 +67,7 @@
 
 
 - (void)setupTextView {
-	textView = [[UITextView alloc] initWithFrame:CGRectMake(0, kIconSize, 250, self.frame.size.height - kIconSize) textContainer:nil];
+	textView = [[UITextView alloc] initWithFrame:CGRectMake(0, kIconSize, self.frame.size.width, self.frame.size.height - kIconSize) textContainer:nil];
 	textView.backgroundColor = [UIColor clearColor];
 
 	UIColor *fontColor;

@@ -382,7 +382,7 @@
 			<key>label</key>
 			<string>Security</string>
 			<key>footerText</key>
-			<string>Enable Privacy Mode to hide the contents of the sticky note when the device is locked.</string>
+			<string>Enable Privacy Mode to hide the contents of the sticky note when the device is locked with a passcode.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
