@@ -27,9 +27,14 @@
 	} else {
 		alphaValue = kDefaultAlpha;
 	}
-	// TODO: Fix colors
-	// BOOL useCustomColor = [defaults boolValueForKey:@"useCustomNoteColor" fallback:NO];
-	self.backgroundColor = [[UIColor yellowColor] colorWithAlphaComponent:alphaValue];//useCustomColor ? [defaults colorValueForKey:@"noteColor" fallback:@"#ffff00"] : [UIColor yellowColor];
+	UIColor *noteColor;
+	if ([([prefs objectForKey:@"useCustomNoteColor"] ?: @(NO)) boolValue]) {
+		noteColor = [self colorForKey:@"noteColor" fallbackNum:13];
+	} else {
+		noteColor = UIColor.yellowColor;
+	}
+	self.backgroundColor = [noteColor colorWithAlphaComponent:alphaValue];
+
 	if ([prefs valueExistsForKey:@"cornerRadius"]) {
 		self.layer.cornerRadius = [([prefs objectForKey:@"cornerRadius"] ?: @(kDefaultCornerRadius)) intValue];
 	} else {
@@ -44,7 +49,13 @@
 - (void)setupClearButton {
 	clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[clearButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-clear.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-	clearButton.imageView.tintColor = [UIColor blackColor]; // TODO: Change to match the selected (custom) font color
+	UIColor *iconColor;
+	if ([([prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
+		iconColor = [self colorForKey:@"fontColor" fallbackNum:0];
+	} else {
+		iconColor = UIColor.blackColor;
+	}
+	clearButton.imageView.tintColor = iconColor;
 	[clearButton addTarget:self action:@selector(clearTextView:) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:clearButton];
 	clearButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -58,9 +69,15 @@
 - (void)setupTextView {
 	textView = [[UITextView alloc] initWithFrame:CGRectMake(0, kIconSize, 250, self.frame.size.height - kIconSize) textContainer:nil];
 	textView.backgroundColor = [UIColor clearColor];
-	// TODO: Fix colors
-	//BOOL useCustomFontColor = [defaults boolValueForKey:@"useCustomFontColor" fallback:NO];
-	textView.textColor = [UIColor blackColor];//useCustomFontColor ? [defaults colorValueForKey:@"fontColor" fallback:@"#000000"] : [UIColor blackColor];
+
+	UIColor *fontColor;
+	if ([([prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
+		fontColor = [self colorForKey:@"fontColor" fallbackNum:0];
+	} else {
+		fontColor = UIColor.blackColor;
+	}
+	textView.textColor = fontColor;
+
 	NSInteger fontSize;
 	if ([prefs valueExistsForKey:@"fontSize"]) {
 		fontSize = [([prefs objectForKey:@"fontSize"] ?: @(kDefaultFontSize)) intValue];
@@ -91,7 +108,13 @@
 
 	UIImage *lockIcon = [UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-lock.png"]];
 	UIImageView *lockIconView = [[UIImageView alloc] initWithImage:[lockIcon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
-	lockIconView.tintColor = [UIColor blackColor]; // TODO: Change to match the selected (custom) font color
+	UIColor *iconColor;
+	if ([([prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
+		iconColor = [self colorForKey:@"fontColor" fallbackNum:0];
+	} else {
+		iconColor = UIColor.blackColor;
+	}
+	lockIconView.tintColor = iconColor;
 	[privacyView addSubview:lockIconView];
 	lockIconView.translatesAutoresizingMaskIntoConstraints = NO;
 	[lockIconView.centerXAnchor constraintEqualToAnchor:privacyView.centerXAnchor].active = YES;
@@ -139,6 +162,60 @@
 	textView.text = @"";
 	[clearButton setHidden:YES];
 	[privacyView setHidden:NO];
+}
+
+#pragma mark - Private Helpers
+
+- (UIColor *)colorForKey:(NSString *)key fallbackNum:(NSInteger)fallback {
+	NSInteger colorNum = [([prefs objectForKey:key] ?: @(fallback)) intValue];
+	UIColor *selectedColor;
+	switch (colorNum) {
+		case 0:
+			selectedColor = UIColor.blackColor;
+			break;
+		case 1:
+			selectedColor = UIColor.blueColor;
+			break;
+		case 2:
+			selectedColor = UIColor.brownColor;
+			break;
+		case 3:
+			selectedColor = UIColor.cyanColor;
+			break;
+		case 4:
+			selectedColor = UIColor.darkGrayColor;
+			break;
+		case 5:
+			selectedColor = UIColor.grayColor;
+			break;
+		case 6:
+			selectedColor = UIColor.greenColor;
+			break;
+		case 7:
+			selectedColor = UIColor.lightGrayColor;
+			break;
+		case 8:
+			selectedColor = UIColor.magentaColor;
+			break;
+		case 9:
+			selectedColor = UIColor.orangeColor;
+			break;
+		case 10:
+			selectedColor = UIColor.purpleColor;
+			break;
+		case 11:
+			selectedColor = UIColor.redColor;
+			break;
+		case 12:
+			selectedColor = UIColor.whiteColor;
+			break;
+		case 13:
+			selectedColor = UIColor.yellowColor;
+			break;
+		default:
+			selectedColor = UIColor.blackColor;
+	}
+	return selectedColor;
 }
 
 @end
