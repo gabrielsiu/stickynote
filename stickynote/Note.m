@@ -55,7 +55,7 @@
 		iconColor = UIColor.blackColor;
 	}
 
-	// Set up navigation bar for the buttons
+	// Set up navigation bar for the buttons with a temporary height
 	buttonsBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, kIconSize)];
 	buttonsBar.tintColor = iconColor;
 
@@ -91,12 +91,15 @@
 	
 	buttonsBar.items = @[buttonsItem];
 
+	// Readjust the height of the navigation bar to account for the included margin
+	buttonsBar.frame = CGRectMake(0, 0, self.frame.size.width, buttonsBar.intrinsicContentSize.height);
 	[self addSubview:buttonsBar];
 }
 
 
 - (void)setupTextView {
-	textView = [[UITextView alloc] initWithFrame:CGRectMake(0, kIconSize, self.frame.size.width, self.frame.size.height - kIconSize) textContainer:nil];
+	// Initialize the text view with a temporary frame; will adjust using auto layout constraints later
+	textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) textContainer:nil];
 	textView.backgroundColor = [UIColor clearColor];
 
 	UIColor *fontColor;
@@ -119,12 +122,17 @@
 	UIToolbar *doneButtonView = [[UIToolbar alloc] init];
 	[doneButtonView sizeToFit];
 	UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissKeyboard:)];
+	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(didPressDoneButton:)];
 	[doneButtonView setItems:[NSArray arrayWithObjects:flexibleSpace, doneButton, nil]];
 	textView.inputAccessoryView = doneButtonView;
 
 	[self restoreSavedText];
 	[self addSubview:textView];
+	textView.translatesAutoresizingMaskIntoConstraints = NO;
+	[textView.topAnchor constraintEqualToAnchor:buttonsBar.bottomAnchor].active = YES;
+	[textView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+	[textView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor].active = YES;
+	[textView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
 }
 
 - (void)setupPrivacyView {
@@ -178,7 +186,11 @@
 	[self.delegate didPressClearButton:self];
 }
 
-- (void)dismissKeyboard:(UIButton *)sender {
+- (void)didPressDoneButton:(UIButton *)sender {
+	[self dismissKeyboard];
+}
+
+- (void)dismissKeyboard {
 	[textView resignFirstResponder];
 }
 
@@ -201,6 +213,7 @@
 	[self restoreSavedText];
 	[buttonsBar setHidden:NO];
 	[privacyView setHidden:YES];
+	[self dismissKeyboard];
 }
 
 - (void)showPrivacyView {

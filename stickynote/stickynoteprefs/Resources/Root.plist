@@ -415,6 +415,12 @@
 			<key>key</key>
 			<string>usePrivacyMode</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Note: After respringing, if the privacy view does not dismiss even after the device is unlocked, lock &amp; unlock your device once.</string>
+		</dict>
 		<!-- Respring -->
 		<dict>
 			<key>cell</key>
