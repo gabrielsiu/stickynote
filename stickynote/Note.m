@@ -65,13 +65,18 @@
 	buttonsBar.translucent = YES;
 	UINavigationItem *buttonsItem = [[UINavigationItem alloc] init];
 
-	// Set up share button
-	UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[shareButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-share.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-	[shareButton addTarget:self action:@selector(didPressShareButton:) forControlEvents:UIControlEventTouchUpInside];
-	shareButton.translatesAutoresizingMaskIntoConstraints = NO;
-	[shareButton.widthAnchor constraintEqualToConstant:kIconSize].active = YES;
-	[shareButton.heightAnchor constraintEqualToConstant:kIconSize].active = YES;
+	if ([([prefs objectForKey:@"allowSharing"] ?: @(NO)) boolValue]) {
+		// Set up share button
+		UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		[shareButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-share.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+		[shareButton addTarget:self action:@selector(didPressShareButton:) forControlEvents:UIControlEventTouchUpInside];
+		shareButton.translatesAutoresizingMaskIntoConstraints = NO;
+		[shareButton.widthAnchor constraintEqualToConstant:kIconSize].active = YES;
+		[shareButton.heightAnchor constraintEqualToConstant:kIconSize].active = YES;
+
+		self.shareButtonItem = [[UIBarButtonItem alloc] initWithCustomView:shareButton];
+		buttonsItem.leftBarButtonItem = self.shareButtonItem;
+	}
 
 	// Set up clear button
 	UIButton *clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -81,11 +86,9 @@
 	[clearButton.widthAnchor constraintEqualToConstant:kIconSize].active = YES;
 	[clearButton.heightAnchor constraintEqualToConstant:kIconSize].active = YES;
 
-	// Add the buttons to the navigation bar
-	self.shareButtonItem = [[UIBarButtonItem alloc] initWithCustomView:shareButton];
 	self.clearButtonItem = [[UIBarButtonItem alloc] initWithCustomView:clearButton];
-	buttonsItem.leftBarButtonItem = self.shareButtonItem;
 	buttonsItem.rightBarButtonItem = self.clearButtonItem;
+	
 	buttonsBar.items = @[buttonsItem];
 
 	[self addSubview:buttonsBar];

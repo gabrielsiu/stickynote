@@ -50,6 +50,10 @@ CGPoint initialCenter;
 // This boolean determines whether or not the Darwin notifications will be observed
 // Initially set to NO, if a device passcode is enabled (determined during initilization) then it will be set to YES
 BOOL passcodeEnabled = NO;
+// This boolean determines whether or not a respring has just occurred
+// Initially set to YES, as soon as the device finishes respringing, it will be set to NO
+// It is only used by the deviceLockStatusChanged callback, as a sign to immediately return if a respring has just occurred
+BOOL respringOccurred = YES;
 
 #pragma mark - iOS 13
 
@@ -137,17 +141,24 @@ BOOL passcodeEnabled = NO;
 
 #pragma mark - Darwin Notification Callbacks
 
+// This callback only gets called when the actual lock status of the device changes (locked<->unlocked)
+// This callback will not get called at all if the device is not secured with a passcode
 static void deviceLockStatusChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	// This callback only gets called when the actual lock status of the device changes (locked<->unlocked)
-	// This callback will not get called at all if the device is not secured with a passcode
 	if (!noteVC) { return; }
+	// This is admittedly not a very robust solution; the problem is that from my experience, after a respring, the deviceLockStatusChanged callback occurs after the hasBlankedScreen callback
+	// This leads to the privacy view not showing immediately after a respring, even if it is enabled (though you can unlock & lock the device to get it to appear)
+	// Therefore just use the respringOccurred boolean to ignore this callback the first time it is called (which will always be right after a respring)
+	if (respringOccurred) {
+		respringOccurred = NO;
+		return;
+	}
 	[noteVC.noteView hidePrivacyView];
 }
 
+// This callback gets called whenever the device screen turns on or off
 static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	// This callback gets called whenever the device screen turns on or off
-	// Additionally, this callback gets called after a respring
 	if (!noteVC) { return; }
+	// Upon waking the device from sleep, this will be the last callback called, so show the privacy view if a passcode is enabled
 	if (passcodeEnabled) {
 		[noteVC.noteView showPrivacyView];
 	}
