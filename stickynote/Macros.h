@@ -21,11 +21,17 @@
 	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];\
 	[hideButton addGestureRecognizer:longPress];\
 	[self addSubview:hideButton];\
+	NSInteger buttonSize;\
+	if ([([prefs objectForKey:@"useCustomButtonSize"] ?: @(NO)) boolValue]) {\
+		buttonSize = [prefs nonZeroIntegerForKey:@"buttonSize" fallback:1.2f*kIconSize];\
+	} else {\
+		buttonSize = 1.2f*kIconSize;\
+	}\
 	NSInteger xOffset = [([prefs objectForKey:@"xOffset"] ?: @0) intValue];\
 	NSInteger yOffset = [([prefs objectForKey:@"yOffset"] ?: @0) intValue];\
 	hideButton.translatesAutoresizingMaskIntoConstraints = NO;\
-	[hideButton.widthAnchor constraintEqualToConstant:1.2f*kIconSize].active = YES;\
-	[hideButton.heightAnchor constraintEqualToConstant:1.2f*kIconSize].active = YES;\
+	[hideButton.widthAnchor constraintEqualToConstant:buttonSize].active = YES;\
+	[hideButton.heightAnchor constraintEqualToConstant:buttonSize].active = YES;\
 	[hideButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:xOffset].active = YES;\
 	[hideButton.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-yOffset].active = YES;\
 })
@@ -110,6 +116,8 @@
 	if (sender.state == UIGestureRecognizerStateBegan) {\
 		[UIView animateWithDuration:0.3f animations:^{\
 			noteVC.noteView.center = CGPointMake(noteVC.noteView.superview.frame.size.width / 2, noteVC.noteView.superview.frame.size.height / 2);\
-		} completion:NULL];\
+		} completion:^(BOOL finished) {\
+			[[NSUserDefaults standardUserDefaults] setObject:NSStringFromCGPoint(CGPointMake(noteVC.noteView.frame.origin.x, noteVC.noteView.frame.origin.y)) forKey:@"stickynote_position"];\
+		}];\
 	}\
 })

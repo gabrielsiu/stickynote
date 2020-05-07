@@ -19,6 +19,13 @@
 	if (![preferences[@"useCustomDuration"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"durationCell"]] animated:NO];
 	}
+	if (![preferences[@"useCustomButtonSize"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"buttonSizeCell"]] animated:NO];
+	}
+	if (![preferences[@"useCustomFont"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customFontCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] animated:NO];
+	}
 }
 
 - (void)reloadSpecifiers {
@@ -37,13 +44,20 @@
 	if (![preferences[@"useCustomDuration"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"durationCell"]] animated:NO];
 	}
+	if (![preferences[@"useCustomButtonSize"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"buttonSizeCell"]] animated:NO];
+	}
+	if (![preferences[@"useCustomFont"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customFontCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] animated:NO];
+	}
 }
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
 
-		NSArray *chosenIDs = @[@"noteColorCell", @"fontColorCell", @"alphaCell", @"durationCell"];
+		NSArray *chosenIDs = @[@"noteColorCell", @"fontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell"];
 		self.savedSpecifiers = (!self.savedSpecifiers) ? [[NSMutableDictionary alloc] init] : self.savedSpecifiers;
 		for (PSSpecifier *specifier in _specifiers) {
 			if ([chosenIDs containsObject:[specifier propertyForKey:@"id"]]) {
@@ -74,15 +88,33 @@
 	} else if ([key isEqualToString:@"useCustomDuration"]) {
 		prevID = @"useCustomDurationCell";
 		chosenID = @"durationCell";
+	} else if ([key isEqualToString:@"useCustomButtonSize"]) {
+		prevID = @"useCustomButtonSizeCell";
+		chosenID = @"buttonSizeCell";
+	} else if ([key isEqualToString:@"useCustomFont"]) {
+		prevID = @"useCustomFontCell";
+		chosenID = @"customFontCell";
 	} else {
 		return;
 	}
 
 	if (![value boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[chosenID]] animated:YES];
+		// Also remove the available fonts cell upon disabling custom fonts
+		if ([key isEqualToString:@"useCustomFont"]) {
+			[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] animated:YES];
+		}
 	} else if (![self containsSpecifier:self.savedSpecifiers[chosenID]]) {
 		[self insertContiguousSpecifiers:@[self.savedSpecifiers[chosenID]] afterSpecifierID:prevID animated:YES];
+		// Also insert the available fonts cell upon enabling custom fonts
+		if ([key isEqualToString:@"useCustomFont"]) {
+			[self insertContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] afterSpecifierID:@"customFontCell" animated:YES];
+		}
 	}
+}
+
+- (void)openFonts {
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://iosfontlist.com/"]];
 }
 
 - (void)respring {

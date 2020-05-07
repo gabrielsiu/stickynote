@@ -116,7 +116,17 @@
 	} else {
 		fontSize = kDefaultFontSize;
 	}
-	textView.font = [UIFont systemFontOfSize:fontSize];
+
+	if ([([prefs objectForKey:@"useCustomFont"] ?: @(NO)) boolValue]) {
+		NSString *fontName = [prefs objectForKey:@"customFont"] ?: @"";
+		if (![fontName isEqualToString:@""]) {
+			textView.font = [UIFont fontWithName:fontName size:fontSize];
+		} else {
+			textView.font = [UIFont systemFontOfSize:fontSize];
+		}
+	} else {
+		textView.font = [UIFont systemFontOfSize:fontSize];
+	}
 
 	// Setup 'Done' button on keyboard
 	UIToolbar *doneButtonView = [[UIToolbar alloc] init];
