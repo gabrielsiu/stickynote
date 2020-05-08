@@ -24,5 +24,8 @@
 - (NSString *)getText;
 - (void)hidePrivacyView;
 - (void)showPrivacyView;
+- (void)startTimer;
+- (void)stopTimer;
+- (void)showButtons;
 
 @end

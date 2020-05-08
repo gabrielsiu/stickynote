@@ -26,6 +26,7 @@
 		if (self.noteView) {
 			[self.noteView setTextViewDelegate:self];
 			self.noteView.delegate = self;
+			self.isEditing = NO;
 
 			// Restore hidden status of note
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stickynote_hidden"] ?: NO) {
@@ -38,8 +39,16 @@
 
 #pragma mark - UITextView Delegate Methods
 
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+	self.isEditing = YES;
+	[self.noteView showButtons];
+	[self.noteView stopTimer];
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView {
+	self.isEditing = NO;
 	[self.noteView saveText];
+	[self.noteView startTimer];
 }
 
 #pragma mark - ButtonActionDelegate Methods

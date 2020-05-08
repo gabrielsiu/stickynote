@@ -75,20 +75,23 @@
 			[noteVC.noteView setAlpha:1.0f];\
 		} completion:^(BOOL finished) {\
 			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"stickynote_hidden"];\
+			[[NSUserDefaults standardUserDefaults] synchronize];\
 		}];\
 		return;\
 	}\
 	/* Show/Hide Animation */\
+	if (!shouldHide)\
+		[noteVC.noteView setHidden:NO];\
 	[UIView transitionWithView:noteVC.noteView duration:duration options:animationType animations:^{\
 		if (shouldHide) {\
 			/* Unable to animate the hiding of a view using transitionWithView, so just animate the transition to a small alpha value, then hide it after */\
 			[noteVC.noteView setAlpha:0.01f];\
 		} else {\
-			[noteVC.noteView setHidden:NO];\
 			[noteVC.noteView setAlpha:1.0f];\
 		}\
 	} completion:^(BOOL finished) {\
 		[[NSUserDefaults standardUserDefaults] setBool:shouldHide forKey:@"stickynote_hidden"];\
+		[[NSUserDefaults standardUserDefaults] synchronize];\
 		if (shouldHide)\
 			[noteVC.noteView setHidden:YES];\
 	}];\
@@ -105,10 +108,16 @@
 		initialCenter = noteView.center;\
 	if (sender.state == UIGestureRecognizerStateEnded)\
 		[[NSUserDefaults standardUserDefaults] setObject:NSStringFromCGPoint(CGPointMake(noteView.frame.origin.x, noteView.frame.origin.y)) forKey:@"stickynote_position"];\
-	if (sender.state != UIGestureRecognizerStateCancelled)\
+		[[NSUserDefaults standardUserDefaults] synchronize];\
+	if (sender.state != UIGestureRecognizerStateCancelled) {\
 		noteView.center = CGPointMake(initialCenter.x + translation.x, initialCenter.y + translation.y);\
-	else\
+		if (useButtonsHideDelay && !noteVC.isEditing) {\
+			[noteVC.noteView showButtons];\
+			[noteVC.noteView startTimer];\
+		}\
+	} else {\
 		noteView.center = initialCenter;\
+	}\
 })
 
 // Handle long press gesture for returning note to center of screen
@@ -118,6 +127,7 @@
 			noteVC.noteView.center = CGPointMake(noteVC.noteView.superview.frame.size.width / 2, noteVC.noteView.superview.frame.size.height / 2);\
 		} completion:^(BOOL finished) {\
 			[[NSUserDefaults standardUserDefaults] setObject:NSStringFromCGPoint(CGPointMake(noteVC.noteView.frame.origin.x, noteVC.noteView.frame.origin.y)) forKey:@"stickynote_position"];\
+			[[NSUserDefaults standardUserDefaults] synchronize];\
 		}];\
 	}\
 })

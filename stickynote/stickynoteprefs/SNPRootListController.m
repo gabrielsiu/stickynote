@@ -26,6 +26,9 @@
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customFontCell"]] animated:NO];
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] animated:NO];
 	}
+	if (![preferences[@"useButtonHiding"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"buttonsHideDelayCell"]] animated:NO];
+	}
 }
 
 - (void)reloadSpecifiers {
@@ -51,13 +54,16 @@
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customFontCell"]] animated:NO];
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] animated:NO];
 	}
+	if (![preferences[@"useButtonHiding"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"buttonsHideDelayCell"]] animated:NO];
+	}
 }
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
 
-		NSArray *chosenIDs = @[@"noteColorCell", @"fontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell"];
+		NSArray *chosenIDs = @[@"noteColorCell", @"fontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell", @"buttonsHideDelayCell"];
 		self.savedSpecifiers = (!self.savedSpecifiers) ? [[NSMutableDictionary alloc] init] : self.savedSpecifiers;
 		for (PSSpecifier *specifier in _specifiers) {
 			if ([chosenIDs containsObject:[specifier propertyForKey:@"id"]]) {
@@ -94,6 +100,9 @@
 	} else if ([key isEqualToString:@"useCustomFont"]) {
 		prevID = @"useCustomFontCell";
 		chosenID = @"customFontCell";
+	} else if ([key isEqualToString:@"useButtonHiding"]) {
+		prevID = @"useButtonHidingCell";
+		chosenID = @"buttonsHideDelayCell";
 	} else {
 		return;
 	}

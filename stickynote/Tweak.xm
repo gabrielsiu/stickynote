@@ -46,6 +46,7 @@ HBPreferences *prefs;
 NoteViewController *noteVC;
 UIButton *hideButton;
 CGPoint initialCenter;
+BOOL useButtonsHideDelay;
 
 // This boolean determines whether or not the Darwin notifications will be observed
 // Initially set to NO, if a device passcode is enabled (determined during initilization) then it will be set to YES
@@ -66,6 +67,7 @@ BOOL respringOccurred = YES;
 		if ([self.superview isMemberOfClass:[%c(CSMainPageView) class]]) {
 			SETUP_NOTE();
 			SETUP_HIDE_BUTTON();
+			useButtonsHideDelay = [([prefs objectForKey:@"useButtonHiding"] ?: @(NO)) boolValue];
 			// If the device is secured with a passcode, enable the Darwin notifications
 			if ([[%c(SBLockStateAggregator) sharedInstance] lockState] != 0) {
 				passcodeEnabled = YES;

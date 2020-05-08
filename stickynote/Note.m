@@ -2,6 +2,11 @@
 #import "Constants.h"
 #import "Note.h"
 
+@interface Note ()
+@property (nonatomic, strong) NSTimer *hideButtonsTimer;
+@property (nonatomic) NSInteger buttonsHideDelay;
+@end
+
 @implementation Note
 
 #pragma mark - Initialization
@@ -14,6 +19,9 @@
 		[self setupButtons];
 		[self setupTextView];
 		[self setupPrivacyView];
+		if ([([prefs objectForKey:@"useButtonHiding"] ?: @(NO)) boolValue]) {
+			[self setupTapGesture];
+		}
 	}
 	return self;
 }
@@ -174,10 +182,23 @@
 	[privacyView setHidden:YES];
 }
 
+- (void)setupTapGesture {
+	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonsBarTapped:)];
+	[self addGestureRecognizer:tap];
+	self.buttonsHideDelay = [prefs nonZeroIntegerForKey:@"buttonsHideDelay" fallback:3];
+	[buttonsBar setAlpha:0];
+	[buttonsBar setHidden:YES];
+}
+
 - (void)restoreSavedText {
-	NSData *noteTextData = [[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_text"];
-	if (noteTextData) {
-		NSString *savedText = [NSKeyedUnarchiver unarchiveObjectWithData:noteTextData];
+	// [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"stickynote_text"];
+	NSString *savedText = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_text"];
+	if (savedText) {
+		// When restoring saved text after a respring, if no text was saved, the text view will be scrollable
+		// This is just a quick fix to prevent that, I may or may not investigate the root cause of the issue later
+		if ([savedText isEqualToString:@""]) {
+			textView.text = @".";
+		}
 		textView.text = savedText;
 	}
 }
@@ -187,6 +208,13 @@
 }
 
 #pragma mark - Actions
+
+- (void)buttonsBarTapped:(UITapGestureRecognizer *)recognizer {
+	if (buttonsBar.isHidden) {
+		[self showButtons];
+		[self startTimer];
+	}
+}
 
 - (void)didPressShareButton:(UIButton *)sender {
 	[self.delegate didPressShareButton:self];
@@ -207,7 +235,8 @@
 #pragma mark - Public Methods
 
 - (void)saveText {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:textView.text] forKey:@"stickynote_text"];
+	[[NSUserDefaults standardUserDefaults] setObject:textView.text forKey:@"stickynote_text"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)clearTextView {
@@ -230,6 +259,31 @@
 	textView.text = @"";
 	[buttonsBar setHidden:YES];
 	[privacyView setHidden:NO];
+}
+
+- (void)startTimer {
+	[self stopTimer];
+	self.hideButtonsTimer = [NSTimer scheduledTimerWithTimeInterval:self.buttonsHideDelay target:self selector:@selector(hideButtons) userInfo:nil repeats:NO];
+}
+
+- (void)stopTimer {
+	[self.hideButtonsTimer invalidate];
+    self.hideButtonsTimer = nil;
+}
+
+- (void)hideButtons {
+	[UIView animateWithDuration:kDefaultAnimDuration animations:^{
+		[buttonsBar setAlpha:0];
+	} completion:^(BOOL finished) {
+		[buttonsBar setHidden:YES];
+	}];
+}
+
+- (void)showButtons {
+	[buttonsBar setHidden:NO];
+	[UIView animateWithDuration:kDefaultAnimDuration animations:^{
+		[buttonsBar setAlpha:1.0f];
+	} completion:nil];
 }
 
 #pragma mark - Private Helpers
