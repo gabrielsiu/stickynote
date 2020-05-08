@@ -139,9 +139,10 @@
 	// Setup 'Done' button on keyboard
 	UIToolbar *doneButtonView = [[UIToolbar alloc] init];
 	[doneButtonView sizeToFit];
+	UIBarButtonItem *bulletItem = [[UIBarButtonItem alloc] initWithTitle:@"•" style:UIBarButtonItemStylePlain target:self action:@selector(didPressBulletButton:)];
 	UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 	UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(didPressDoneButton:)];
-	[doneButtonView setItems:[NSArray arrayWithObjects:flexibleSpace, doneButton, nil]];
+	[doneButtonView setItems:[NSArray arrayWithObjects:bulletItem, flexibleSpace, doneButton, nil]];
 	textView.inputAccessoryView = doneButtonView;
 
 	[self restoreSavedText];
@@ -222,6 +223,10 @@
 
 - (void)didPressClearButton:(UIButton *)sender {
 	[self.delegate didPressClearButton:self];
+}
+
+- (void)didPressBulletButton:(UIButton *)sender {
+	textView.text = [textView.text stringByAppendingString:@"• "];
 }
 
 - (void)didPressDoneButton:(UIButton *)sender {
