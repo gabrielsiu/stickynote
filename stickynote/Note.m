@@ -3,6 +3,8 @@
 #import "Note.h"
 
 @interface Note ()
+@property (nonatomic) BOOL useButtonHiding;
+@property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
 @property (nonatomic, strong) NSTimer *hideButtonsTimer;
 @property (nonatomic) NSInteger buttonsHideDelay;
 @end
@@ -19,7 +21,8 @@
 		[self setupButtons];
 		[self setupTextView];
 		[self setupPrivacyView];
-		if ([([prefs objectForKey:@"useButtonHiding"] ?: @(NO)) boolValue]) {
+		self.useButtonHiding = [([prefs objectForKey:@"useButtonHiding"] ?: @(NO)) boolValue];
+		if (self.useButtonHiding) {
 			[self setupTapGesture];
 		}
 	}
@@ -184,15 +187,14 @@
 }
 
 - (void)setupTapGesture {
-	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonsBarTapped:)];
-	[self addGestureRecognizer:tap];
+	self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonsBarTapped:)];
+	[self addGestureRecognizer:self.tapRecognizer];
 	self.buttonsHideDelay = [prefs nonZeroIntegerForKey:@"buttonsHideDelay" fallback:3];
 	[buttonsBar setAlpha:0];
 	[buttonsBar setHidden:YES];
 }
 
 - (void)restoreSavedText {
-	// [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"stickynote_text"];
 	NSString *savedText = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_text"];
 	if (savedText) {
 		// When restoring saved text after a respring, if no text was saved, the text view will be scrollable
@@ -253,17 +255,25 @@
 	return textView.text;
 }
 
+- (BOOL)privacyViewIsHidden {
+	return privacyView.isHidden;
+}
+
 - (void)hidePrivacyView {
 	[self restoreSavedText];
 	[buttonsBar setHidden:NO];
 	[privacyView setHidden:YES];
 	[self dismissKeyboard];
+	if (self.useButtonHiding)
+		self.tapRecognizer.enabled = YES;
 }
 
 - (void)showPrivacyView {
 	textView.text = @"";
 	[buttonsBar setHidden:YES];
 	[privacyView setHidden:NO];
+	if (self.useButtonHiding)
+		self.tapRecognizer.enabled = NO;
 }
 
 - (void)startTimer {

@@ -22,6 +22,7 @@
 - (void)saveText;
 - (void)clearTextView;
 - (NSString *)getText;
+- (BOOL)privacyViewIsHidden;
 - (void)hidePrivacyView;
 - (void)showPrivacyView;
 - (void)startTimer;

@@ -111,7 +111,7 @@
 		[[NSUserDefaults standardUserDefaults] synchronize];\
 	if (sender.state != UIGestureRecognizerStateCancelled) {\
 		noteView.center = CGPointMake(initialCenter.x + translation.x, initialCenter.y + translation.y);\
-		if (useButtonsHideDelay && !noteVC.isEditing) {\
+		if (useButtonsHideDelay && !noteVC.isEditing && noteVC.noteView.privacyViewIsHidden) {\
 			[noteVC.noteView showButtons];\
 			[noteVC.noteView startTimer];\
 		}\
