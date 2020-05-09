@@ -32,6 +32,7 @@
 #pragma mark - Setup
 
 - (void)setupStyle {
+	// Alpha & Note Color
 	double alphaValue;
 	if ([([prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
 		alphaValue = [([prefs objectForKey:@"alphaValue"] ?: @(kDefaultAlpha)) doubleValue];
@@ -46,15 +47,20 @@
 	}
 	self.backgroundColor = [noteColor colorWithAlphaComponent:alphaValue];
 
+	// Corner Radius
 	if ([prefs valueExistsForKey:@"cornerRadius"]) {
 		self.layer.cornerRadius = [([prefs objectForKey:@"cornerRadius"] ?: @(kDefaultCornerRadius)) intValue];
 	} else {
 		self.layer.cornerRadius = kDefaultCornerRadius;
 	}
-	self.layer.masksToBounds = NO;
-	self.layer.shadowOffset = CGSizeMake(-5, 5);
-	self.layer.shadowRadius = 5;
-	self.layer.shadowOpacity = 0.5;
+
+	// Note Shadow
+	if ([([prefs objectForKey:@"useNoteShadow"] ?: @(YES)) boolValue]) {
+		self.layer.masksToBounds = NO;
+		self.layer.shadowOffset = CGSizeMake(-5, 5);
+		self.layer.shadowRadius = 5;
+		self.layer.shadowOpacity = 0.5;
+	}
 }
 
 - (void)setupButtons {
@@ -150,11 +156,16 @@
 
 	[self restoreSavedText];
 	[self addSubview:textView];
+
+	NSInteger topMargin = [([prefs objectForKey:@"textViewTopMargin"] ?: @0) intValue];
+	NSInteger bottomMargin = [([prefs objectForKey:@"textViewBottomMargin"] ?: @0) intValue];
+	NSInteger leftMargin = [([prefs objectForKey:@"textViewLeftMargin"] ?: @0) intValue];
+	NSInteger rightMargin = [([prefs objectForKey:@"textViewRightMargin"] ?: @0) intValue];
 	textView.translatesAutoresizingMaskIntoConstraints = NO;
-	[textView.topAnchor constraintEqualToAnchor:buttonsBar.bottomAnchor].active = YES;
-	[textView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
-	[textView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor].active = YES;
-	[textView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
+	[textView.topAnchor constraintEqualToAnchor:buttonsBar.bottomAnchor constant:topMargin].active = YES;
+	[textView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-bottomMargin].active = YES;
+	[textView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:leftMargin].active = YES;
+	[textView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-rightMargin].active = YES;
 }
 
 - (void)setupPrivacyView {
