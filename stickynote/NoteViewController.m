@@ -2,11 +2,15 @@
 #import "HBPreferences+Helpers.h"
 #import "NoteViewController.h"
 
+@interface NoteViewController ()
+@property (nonatomic) BOOL useButtonHiding;
+@end
+
 @implementation NoteViewController
 
 #pragma mark - Initialization
 
-- (id)initWithPrefs:(HBPreferences *)preferences screenSize:(CGSize)size {
+- (id)initWithPrefs:(HBPreferences *)preferences screenSize:(CGSize)size useButtonHiding:(BOOL)useButtonHiding {
 	self = [super initWithNibName:nil bundle:nil];
 	if (self) {
 		NSInteger width = [preferences nonZeroIntegerForKey:@"width" fallback:kDefaultNoteSize];
@@ -22,7 +26,8 @@
 			position = CGPointMake((size.width - width) / 2.0f, (size.height - height) / 2.0f);
 		}
 
-		self.noteView = [[Note alloc] initWithFrame:CGRectMake(position.x, position.y, width, height) prefs:preferences];
+		self.useButtonHiding = useButtonHiding;
+		self.noteView = [[Note alloc] initWithFrame:CGRectMake(position.x, position.y, width, height) prefs:preferences useButtonHiding:useButtonHiding];
 		if (self.noteView) {
 			[self.noteView setTextViewDelegate:self];
 			self.noteView.delegate = self;
@@ -41,14 +46,18 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
 	self.isEditing = YES;
-	[self.noteView showButtons];
-	[self.noteView stopTimer];
+	if (self.useButtonHiding) {
+		[self.noteView showButtons];
+		[self.noteView stopTimer];
+	}
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 	self.isEditing = NO;
-	[self.noteView saveText];
-	[self.noteView startTimer];
+	if (self.useButtonHiding) {
+		[self.noteView saveText];
+		[self.noteView startTimer];
+	}
 }
 
 #pragma mark - ButtonActionDelegate Methods

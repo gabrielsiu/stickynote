@@ -5,7 +5,8 @@
 #pragma mark - Setup
 
 #define SETUP_NOTE() ({\
-	noteVC = [[NoteViewController alloc] initWithPrefs:prefs screenSize:self.frame.size];\
+	useButtonsHideDelay = [([prefs objectForKey:@"useButtonHiding"] ?: @(NO)) boolValue];\
+	noteVC = [[NoteViewController alloc] initWithPrefs:prefs screenSize:self.frame.size useButtonHiding:useButtonsHideDelay];\
 	UIPanGestureRecognizer *fingerDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDrag:)];\
 	[noteVC.noteView addGestureRecognizer:fingerDrag];\
 	[self addSubview:noteVC.noteView];\

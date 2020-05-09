@@ -17,7 +17,7 @@
 @property (nonatomic, strong) UIBarButtonItem *shareButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *clearButtonItem;
 
-- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences;
+- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences useButtonHiding:(BOOL)useButtonHiding;
 - (void)setTextViewDelegate:(id)delegate;
 - (void)saveText;
 - (void)clearTextView;

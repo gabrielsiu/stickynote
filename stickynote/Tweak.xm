@@ -67,7 +67,7 @@ BOOL respringOccurred = YES;
 		if ([self.superview isMemberOfClass:[%c(CSMainPageView) class]]) {
 			SETUP_NOTE();
 			SETUP_HIDE_BUTTON();
-			useButtonsHideDelay = [([prefs objectForKey:@"useButtonHiding"] ?: @(NO)) boolValue];
+			
 			// If the device is secured with a passcode, enable the Darwin notifications
 			if ([[%c(SBLockStateAggregator) sharedInstance] lockState] != 0) {
 				passcodeEnabled = YES;
@@ -160,6 +160,7 @@ static void deviceLockStatusChanged(CFNotificationCenterRef center, void *observ
 // This callback gets called whenever the device screen turns on or off
 static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	if (!noteVC) { return; }
+	[noteVC.noteView saveText];
 	// Upon waking the device from sleep, this will be the last callback called, so show the privacy view if a passcode is enabled
 	if (passcodeEnabled) {
 		[noteVC.noteView showPrivacyView];

@@ -13,7 +13,7 @@
 
 #pragma mark - Initialization
 
-- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences {
+- (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences useButtonHiding:(BOOL)useButtonHiding {
 	self = [super initWithFrame:frame];
 	if (self) {
 		prefs = preferences;
@@ -21,7 +21,7 @@
 		[self setupButtons];
 		[self setupTextView];
 		[self setupPrivacyView];
-		self.useButtonHiding = [([prefs objectForKey:@"useButtonHiding"] ?: @(NO)) boolValue];
+		self.useButtonHiding = useButtonHiding;
 		if (self.useButtonHiding) {
 			[self setupTapGesture];
 		}
@@ -283,7 +283,7 @@
 
 - (void)stopTimer {
 	[self.hideButtonsTimer invalidate];
-    self.hideButtonsTimer = nil;
+	self.hideButtonsTimer = nil;
 }
 
 - (void)hideButtons {
