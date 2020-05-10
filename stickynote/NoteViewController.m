@@ -54,8 +54,8 @@
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 	self.isEditing = NO;
+	[self.noteView saveText];
 	if (self.useButtonHiding) {
-		[self.noteView saveText];
 		[self.noteView startTimer];
 	}
 }

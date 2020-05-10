@@ -99,9 +99,9 @@ BOOL respringOccurred = YES;
 %end
 %end
 
-#pragma mark - iOS 12
+#pragma mark - iOS 11 & 12
 
-%group iOS12
+%group iOS11and12
 %hook SBDashBoardViewBase
 
 - (void)didMoveToSuperview {
@@ -110,6 +110,7 @@ BOOL respringOccurred = YES;
 		if ([self.superview isMemberOfClass:[%c(SBDashBoardMainPageView) class]]) {
 			SETUP_NOTE();
 			SETUP_HIDE_BUTTON();
+
 			// If the device is secured with a passcode, enable the Darwin notifications
 			if ([[%c(SBLockStateAggregator) sharedInstance] lockState] != 0) {
 				passcodeEnabled = YES;
@@ -160,7 +161,10 @@ static void deviceLockStatusChanged(CFNotificationCenterRef center, void *observ
 // This callback gets called whenever the device screen turns on or off
 static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	if (!noteVC) { return; }
-	[noteVC.noteView saveText];
+	// Save the contents of the note when the screen turns off, but only if there's text there
+	if (![[noteVC.noteView getText] isEqualToString:@""]) {
+		[noteVC.noteView saveText];
+	}
 	// Upon waking the device from sleep, this will be the last callback called, so show the privacy view if a passcode is enabled
 	if (passcodeEnabled) {
 		[noteVC.noteView showPrivacyView];
@@ -181,7 +185,7 @@ static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFS
 			if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0")) {
 				%init(iOS13);
 			} else {
-				%init(iOS12);
+				%init(iOS11and12);
 			}
 		}
 	}

@@ -34,6 +34,64 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>label</key>
+			<string>Add Blur Effect</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>useBlurEffect</string>
+			<key>id</key>
+			<string>useBlurEffectCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Enable Note Shadow</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>useNoteShadow</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>label</key>
+			<string>Blur Style</string>
+			<key>validTitles</key>
+			<array>
+				<string>Extra Light</string>
+				<string>Light</string>
+				<string>Dark</string>
+				<string>Regular</string>
+				<string>Prominent</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+				<string>3</string>
+				<string>4</string>
+			</array>
+			<key>default</key>
+			<string>3</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>blurStyle</string>
+			<key>id</key>
+			<string>blurStyleCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
 			<string>Custom Note Color</string>
 			<key>default</key>
 			<false/>
@@ -46,53 +104,24 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSLinkListCell</string>
-			<key>detail</key>
-			<string>PSListItemsController</string>
+			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>SparkColourPickerCell</string>
+			<key>libsparkcolourpicker</key>
+			<dict>
+				<key>defaults</key>
+				<string>com.gabrielsiu.stickynotecolors</string>
+				<key>fallback</key>
+				<string>#ffff00</string>
+				<key>alpha</key>
+				<false/>
+			</dict>
 			<key>label</key>
 			<string>Note Color</string>
-			<key>validTitles</key>
-			<array>
-				<string>Black</string>
-				<string>Blue</string>
-				<string>Brown</string>
-				<string>Cyan</string>
-				<string>Dark Gray</string>
-				<string>Gray</string>
-				<string>Green</string>
-				<string>Light Gray</string>
-				<string>Magenta</string>
-				<string>Orange</string>
-				<string>Purple</string>
-				<string>Red</string>
-				<string>White</string>
-				<string>Yellow</string>
-			</array>
-			<key>validValues</key>
-			<array>
-				<string>0</string>
-				<string>1</string>
-				<string>2</string>
-				<string>3</string>
-				<string>4</string>
-				<string>5</string>
-				<string>6</string>
-				<string>7</string>
-				<string>8</string>
-				<string>9</string>
-				<string>10</string>
-				<string>11</string>
-				<string>12</string>
-				<string>13</string>
-			</array>
-			<key>default</key>
-			<string>Yellow</string>
-			<key>defaults</key>
-			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
-			<string>noteColor</string>
+			<string>customNoteColor</string>
 			<key>id</key>
-			<string>noteColorCell</string>
+			<string>customNoteColorCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -110,53 +139,24 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSLinkListCell</string>
-			<key>detail</key>
-			<string>PSListItemsController</string>
+			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>SparkColourPickerCell</string>
+			<key>libsparkcolourpicker</key>
+			<dict>
+				<key>defaults</key>
+				<string>com.gabrielsiu.stickynotecolors</string>
+				<key>fallback</key>
+				<string>#000000</string>
+				<key>alpha</key>
+				<false/>
+			</dict>
 			<key>label</key>
-			<string>Font &amp; Icon Color</string>
-			<key>validTitles</key>
-			<array>
-				<string>Black</string>
-				<string>Blue</string>
-				<string>Brown</string>
-				<string>Cyan</string>
-				<string>Dark Gray</string>
-				<string>Gray</string>
-				<string>Green</string>
-				<string>Light Gray</string>
-				<string>Magenta</string>
-				<string>Orange</string>
-				<string>Purple</string>
-				<string>Red</string>
-				<string>White</string>
-				<string>Yellow</string>
-			</array>
-			<key>validValues</key>
-			<array>
-				<string>0</string>
-				<string>1</string>
-				<string>2</string>
-				<string>3</string>
-				<string>4</string>
-				<string>5</string>
-				<string>6</string>
-				<string>7</string>
-				<string>8</string>
-				<string>9</string>
-				<string>10</string>
-				<string>11</string>
-				<string>12</string>
-				<string>13</string>
-			</array>
-			<key>default</key>
-			<string>Black</string>
-			<key>defaults</key>
-			<string>com.gabrielsiu.stickynoteprefs</string>
+			<string>Icon &amp; Font Color</string>
 			<key>key</key>
-			<string>fontColor</string>
+			<string>customFontColor</string>
 			<key>id</key>
-			<string>fontColorCell</string>
+			<string>customFontColorCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -189,18 +189,6 @@
 			<string>alphaValue</string>
 			<key>id</key>
 			<string>alphaCell</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>label</key>
-			<string>Enable Note Shadow</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.gabrielsiu.stickynoteprefs</string>
-			<key>key</key>
-			<string>useNoteShadow</string>
 		</dict>
 		<!-- Font -->
 		<dict>
@@ -554,7 +542,7 @@
 				<string>5</string>
 			</array>
 			<key>default</key>
-			<string>Fade</string>
+			<string>0</string>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
@@ -623,7 +611,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Note: After reinstalling or updating this tweak, the privacy view may not dismiss even after the device is unlocked. If this happens, lock &amp; unlock your device once.</string>
+			<string>Note: After reinstalling or updating this tweak, the privacy view may not dismiss if the device is unlocked too quickly. If this happens, you may need to lock &amp; unlock your device 1-2 times.</string>
 		</dict>
 		<!-- Respring -->
 		<dict>

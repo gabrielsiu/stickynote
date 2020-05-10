@@ -1,7 +1,7 @@
 Package: com.gabrielsiu.stickynote
 Name: StickyNote
 Depends: mobilesubstrate, ws.hbang.common (>= 1.11), com.spark.libsparkcolourpicker
-Version: 0.0.1
+Version: 1.0.0
 Architecture: iphoneos-arm
 Description: Add a handy sticky note to your device's lock screen
 Maintainer: Gabriel Siu

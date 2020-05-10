@@ -1,7 +1,6 @@
 #import "HBPreferences+Helpers.h"
 #import "Constants.h"
 #import "Note.h"
-#import "SparkColourPickerUtils.h"
 
 @interface Note ()
 @property (nonatomic) BOOL useButtonHiding;
@@ -37,6 +36,8 @@
 #pragma mark - Setup
 
 - (void)setupStyle {
+	self.clipsToBounds = YES;
+
 	// Alpha & Note Color
 	double alphaValue;
 	if ([([self.prefs objectForKey:@"useCustomAlpha"] ?: @(NO)) boolValue]) {
@@ -46,24 +47,57 @@
 	}
 	UIColor *noteColor;
 	if ([([self.prefs objectForKey:@"useCustomNoteColor"] ?: @(NO)) boolValue]) {
-		noteColor = [self colorForKey:@"noteColor" fallbackNum:13];
+		noteColor = [self colorForKey:@"customNoteColor" fallbackColorHex:@"#ffff00"];
 	} else {
 		noteColor = UIColor.yellowColor;
 	}
 	self.backgroundColor = [noteColor colorWithAlphaComponent:alphaValue];
 
 	// Corner Radius
+	NSInteger cornerRadius;
 	if ([self.prefs valueExistsForKey:@"cornerRadius"]) {
-		self.layer.cornerRadius = [([self.prefs objectForKey:@"cornerRadius"] ?: @(kDefaultCornerRadius)) intValue];
+		cornerRadius = [([self.prefs objectForKey:@"cornerRadius"] ?: @(kDefaultCornerRadius)) intValue];
 	} else {
-		self.layer.cornerRadius = kDefaultCornerRadius;
+		cornerRadius = kDefaultCornerRadius;
+	}
+	self.layer.cornerRadius = cornerRadius;
+
+	// Blur Effect
+	if ([([self.prefs objectForKey:@"useBlurEffect"] ?: @(YES)) boolValue]) {
+		NSInteger blurStyleNum = [([self.prefs objectForKey:@"blurStyle"] ?: @3) intValue];
+		UIBlurEffectStyle blurStyle;
+		switch (blurStyleNum) {
+			case 0:
+				blurStyle = UIBlurEffectStyleExtraLight;
+				break;
+			case 1:
+				blurStyle = UIBlurEffectStyleLight;
+				break;
+			case 2:
+				blurStyle = UIBlurEffectStyleDark;
+				break;
+			case 3:
+				blurStyle = UIBlurEffectStyleRegular;
+				break;
+			case 4:
+				blurStyle = UIBlurEffectStyleProminent;
+				break;
+			default:
+				blurStyle = UIBlurEffectStyleRegular;
+		}
+		UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:blurStyle];
+		UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+		visualEffectView.frame = self.bounds;
+		visualEffectView.layer.cornerRadius = cornerRadius;
+		visualEffectView.clipsToBounds = YES;
+		[self addSubview:visualEffectView];
 	}
 
 	// Note Shadow
-	if ([([self.prefs objectForKey:@"useNoteShadow"] ?: @(YES)) boolValue]) {
+	if ([([self.prefs objectForKey:@"useNoteShadow"] ?: @(NO)) boolValue]) {
 		self.layer.masksToBounds = NO;
 		self.layer.shadowOffset = CGSizeMake(-5, 5);
-		self.layer.shadowRadius = 5;
+		self.layer.shadowRadius = cornerRadius;
 		self.layer.shadowOpacity = 0.5;
 	}
 }
@@ -72,7 +106,7 @@
 	// Determine custom button color, if chosen
 	UIColor *buttonColor;
 	if ([([self.prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
-		buttonColor = [self colorForKey:@"fontColor" fallbackNum:0];
+		buttonColor = [self colorForKey:@"customFontColor" fallbackColorHex:@"#000000"];
 	} else {
 		buttonColor = UIColor.blackColor;
 	}
@@ -153,7 +187,7 @@
 
 	UIColor *fontColor;
 	if ([([self.prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
-		fontColor = [self colorForKey:@"fontColor" fallbackNum:0];
+		fontColor = [self colorForKey:@"customFontColor" fallbackColorHex:@"#000000"];
 	} else {
 		fontColor = UIColor.blackColor;
 	}
@@ -212,7 +246,7 @@
 	UIImageView *lockIconView = [[UIImageView alloc] initWithImage:[lockIcon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]];
 	UIColor *iconColor;
 	if ([([self.prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
-		iconColor = [self colorForKey:@"fontColor" fallbackNum:0];
+		iconColor = [self colorForKey:@"customFontColor" fallbackColorHex:@"#000000"];
 	} else {
 		iconColor = UIColor.blackColor;
 	}
@@ -303,7 +337,7 @@
 
 - (void)hidePrivacyView {
 	[self restoreSavedText];
-	[self.buttonsContainerView setHidden:NO];
+	[self.buttonsContainerView setHidden:self.useButtonHiding];
 	[self.privacyView setHidden:YES];
 	[self dismissKeyboard];
 	if (self.useButtonHiding)
@@ -345,56 +379,24 @@
 
 #pragma mark - Private Helpers
 
-- (UIColor *)colorForKey:(NSString *)key fallbackNum:(NSInteger)fallback {
-	NSInteger colorNum = [([self.prefs objectForKey:key] ?: @(fallback)) intValue];
-	UIColor *selectedColor;
-	switch (colorNum) {
-		case 0:
-			selectedColor = UIColor.blackColor;
-			break;
-		case 1:
-			selectedColor = UIColor.blueColor;
-			break;
-		case 2:
-			selectedColor = UIColor.brownColor;
-			break;
-		case 3:
-			selectedColor = UIColor.cyanColor;
-			break;
-		case 4:
-			selectedColor = UIColor.darkGrayColor;
-			break;
-		case 5:
-			selectedColor = UIColor.grayColor;
-			break;
-		case 6:
-			selectedColor = UIColor.greenColor;
-			break;
-		case 7:
-			selectedColor = UIColor.lightGrayColor;
-			break;
-		case 8:
-			selectedColor = UIColor.magentaColor;
-			break;
-		case 9:
-			selectedColor = UIColor.orangeColor;
-			break;
-		case 10:
-			selectedColor = UIColor.purpleColor;
-			break;
-		case 11:
-			selectedColor = UIColor.redColor;
-			break;
-		case 12:
-			selectedColor = UIColor.whiteColor;
-			break;
-		case 13:
-			selectedColor = UIColor.yellowColor;
-			break;
-		default:
-			selectedColor = UIColor.blackColor;
+- (UIColor *)colorForKey:(NSString *)key fallbackColorHex:(NSString *)fallback {
+	NSString *finalColorString = fallback;
+
+	NSDictionary *prefsDict = [NSDictionary dictionaryWithContentsOfFile: @"/var/mobile/Library/Preferences/com.gabrielsiu.stickynotecolors.plist"];
+	if (prefsDict) {
+		NSString *colorString = [prefsDict objectForKey:key] ?: fallback;
+		// Remove alpha component from the color string
+		NSString *colon = @":";
+		finalColorString = [colorString componentsSeparatedByString:colon].firstObject;
 	}
-	return selectedColor;
+
+	// Convert hex string to UIColor
+	// Adapted from https://stackoverflow.com/a/12397366
+	unsigned rgbValue = 0;
+	NSScanner *scanner = [NSScanner scannerWithString:finalColorString];
+	[scanner setScanLocation:1];
+	[scanner scanHexInt:&rgbValue];
+	return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
 }
 
 @end

@@ -8,10 +8,10 @@
 	
 	NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.gabrielsiu.stickynoteprefs.plist"];
 	if (![preferences[@"useCustomNoteColor"] boolValue]) {
-		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"noteColorCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customNoteColorCell"]] animated:NO];
 	}
 	if (![preferences[@"useCustomFontColor"] boolValue]) {
-		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"fontColorCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customFontColorCell"]] animated:NO];
 	}
 	if (![preferences[@"useCustomAlpha"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"alphaCell"]] animated:NO];
@@ -31,6 +31,9 @@
 	}
 	if (![preferences[@"useCustomTopButtonSize"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"topButtonSizeCell"]] animated:NO];
+	}
+	if (![preferences[@"useBlurEffect"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"blurStyleCell"]] animated:NO];
 	}
 }
 
@@ -39,10 +42,10 @@
 	
 	NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.gabrielsiu.stickynoteprefs.plist"];
 	if (![preferences[@"useCustomNoteColor"] boolValue]) {
-		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"noteColorCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customNoteColorCell"]] animated:NO];
 	}
 	if (![preferences[@"useCustomFontColor"] boolValue]) {
-		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"fontColorCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customFontColorCell"]] animated:NO];
 	}
 	if (![preferences[@"useCustomAlpha"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"alphaCell"]] animated:NO];
@@ -63,13 +66,16 @@
 	if (![preferences[@"useCustomTopButtonSize"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"topButtonSizeCell"]] animated:NO];
 	}
+	if (![preferences[@"useBlurEffect"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"blurStyleCell"]] animated:NO];
+	}
 }
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
 
-		NSArray *chosenIDs = @[@"noteColorCell", @"fontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell", @"buttonsHideDelayCell", @"topButtonSizeCell"];
+		NSArray *chosenIDs = @[@"customNoteColorCell", @"customFontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell", @"buttonsHideDelayCell", @"topButtonSizeCell", @"blurStyleCell"];
 		self.savedSpecifiers = (!self.savedSpecifiers) ? [[NSMutableDictionary alloc] init] : self.savedSpecifiers;
 		for (PSSpecifier *specifier in _specifiers) {
 			if ([chosenIDs containsObject:[specifier propertyForKey:@"id"]]) {
@@ -90,10 +96,10 @@
 
 	if ([key isEqualToString:@"useCustomNoteColor"]) {
 		prevID = @"useCustomNoteColorCell";
-		chosenID = @"noteColorCell";
+		chosenID = @"customNoteColorCell";
 	} else if ([key isEqualToString:@"useCustomFontColor"]) {
 		prevID = @"useCustomFontColorCell";
-		chosenID = @"fontColorCell";
+		chosenID = @"customFontColorCell";
 	} else if ([key isEqualToString:@"useCustomAlpha"]) {
 		prevID = @"useCustomAlphaCell";
 		chosenID = @"alphaCell";
@@ -112,6 +118,9 @@
 	} else if ([key isEqualToString:@"useCustomTopButtonSize"]) {
 		prevID = @"useCustomTopButtonSizeCell";
 		chosenID = @"topButtonSizeCell";
+	} else if ([key isEqualToString:@"useBlurEffect"]) {
+		prevID = @"useBlurEffectCell";
+		chosenID = @"blurStyleCell";
 	} else {
 		return;
 	}
