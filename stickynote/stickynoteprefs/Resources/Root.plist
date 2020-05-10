@@ -438,6 +438,87 @@
 			<key>id</key>
 			<string>buttonSizeCell</string>
 		</dict>
+		<!-- Top Buttons -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Top Buttons</string>
+			<key>footerText</key>
+			<string>Enable this to add a share button to the top left of the note, allowing you to share the contents of the note.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Automatically hide top buttons</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>useButtonHiding</string>
+			<key>id</key>
+			<string>useButtonHidingCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Delay to hide buttons:</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>placeholder</key>
+			<string>3</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>buttonsHideDelay</string>
+			<key>id</key>
+			<string>buttonsHideDelayCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Custom Button Size</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>useCustomTopButtonSize</string>
+			<key>id</key>
+			<string>useCustomTopButtonSizeCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Button Size:</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>placeholder</key>
+			<string>35</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>topButtonSize</string>
+			<key>id</key>
+			<string>topButtonSizeCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Add Share button</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>allowSharing</string>
+		</dict>
 		<!-- Animations -->
 		<dict>
 			<key>cell</key>
@@ -516,64 +597,6 @@
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>Changes to the animations do not require a respring to take effect.</string>
-		</dict>
-		<!-- Miscellaneous -->
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Miscellaneous</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>label</key>
-			<string>Automatically hide top buttons</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.gabrielsiu.stickynoteprefs</string>
-			<key>key</key>
-			<string>useButtonHiding</string>
-			<key>id</key>
-			<string>useButtonHidingCell</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSEditTextCell</string>
-			<key>label</key>
-			<string>Delay to hide buttons:</string>
-			<key>isNumeric</key>
-			<true/>
-			<key>placeholder</key>
-			<string>3</string>
-			<key>defaults</key>
-			<string>com.gabrielsiu.stickynoteprefs</string>
-			<key>key</key>
-			<string>buttonsHideDelay</string>
-			<key>id</key>
-			<string>buttonsHideDelayCell</string>
-		</dict>
-		<!-- Sharing -->
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Sharing</string>
-			<key>footerText</key>
-			<string>Enable this to add a share button to the top left of the note, allowing you to share the contents of the note.</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>label</key>
-			<string>Add Share button</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.gabrielsiu.stickynoteprefs</string>
-			<key>key</key>
-			<string>allowSharing</string>
 		</dict>
 		<!-- Security -->
 		<dict>

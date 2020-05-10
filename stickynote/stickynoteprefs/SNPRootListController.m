@@ -29,6 +29,9 @@
 	if (![preferences[@"useButtonHiding"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"buttonsHideDelayCell"]] animated:NO];
 	}
+	if (![preferences[@"useCustomTopButtonSize"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"topButtonSizeCell"]] animated:NO];
+	}
 }
 
 - (void)reloadSpecifiers {
@@ -57,13 +60,16 @@
 	if (![preferences[@"useButtonHiding"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"buttonsHideDelayCell"]] animated:NO];
 	}
+	if (![preferences[@"useCustomTopButtonSize"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"topButtonSizeCell"]] animated:NO];
+	}
 }
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
 
-		NSArray *chosenIDs = @[@"noteColorCell", @"fontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell", @"buttonsHideDelayCell"];
+		NSArray *chosenIDs = @[@"noteColorCell", @"fontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell", @"buttonsHideDelayCell", @"topButtonSizeCell"];
 		self.savedSpecifiers = (!self.savedSpecifiers) ? [[NSMutableDictionary alloc] init] : self.savedSpecifiers;
 		for (PSSpecifier *specifier in _specifiers) {
 			if ([chosenIDs containsObject:[specifier propertyForKey:@"id"]]) {
@@ -103,6 +109,9 @@
 	} else if ([key isEqualToString:@"useButtonHiding"]) {
 		prevID = @"useButtonHidingCell";
 		chosenID = @"buttonsHideDelayCell";
+	} else if ([key isEqualToString:@"useCustomTopButtonSize"]) {
+		prevID = @"useCustomTopButtonSizeCell";
+		chosenID = @"topButtonSizeCell";
 	} else {
 		return;
 	}

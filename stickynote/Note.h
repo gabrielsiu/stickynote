@@ -6,12 +6,7 @@
 - (void)didPressClearButton:(Note *)sender;
 @end
 
-@interface Note : UIView {
-	UINavigationBar *buttonsBar;
-	UITextView *textView;
-	HBPreferences *prefs;
-	UIView *privacyView;
-}
+@interface Note : UIView
 
 @property (nonatomic, weak) id <ButtonActionDelegate> delegate;
 @property (nonatomic, strong) UIBarButtonItem *shareButtonItem;
