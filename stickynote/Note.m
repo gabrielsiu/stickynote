@@ -125,7 +125,7 @@
 	NSInteger rightMargin = [([self.prefs objectForKey:@"textViewRightMargin"] ?: @0) intValue];
 
 	// Set up buttons container view
-	self.buttonsContainerView = [[UIView alloc] initWithFrame:CGRectMake(topMargin, leftMargin, self.frame.size.width - leftMargin - rightMargin, buttonSize)];
+	self.buttonsContainerView = [[UIView alloc] initWithFrame:CGRectMake(leftMargin, topMargin, self.frame.size.width - leftMargin - rightMargin, buttonSize)];
 	self.buttonsContainerView.backgroundColor = UIColor.clearColor;
 	[self addSubview:self.buttonsContainerView];
 
@@ -304,7 +304,7 @@
 }
 
 - (void)didPressBulletButton:(UIButton *)sender {
-	self.textView.text = [self.textView.text stringByAppendingString:@"• "];
+	[self.textView insertText:@"• "];
 }
 
 - (void)didPressDoneButton:(UIButton *)sender {
