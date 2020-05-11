@@ -2,7 +2,7 @@
 
 Sometimes you need to take a note as quickly as possible, or write down a reminder without risk of forgetting about it. StickyNote is a tweak that provides a solution to these situations, by adding a handy sticky note to your device's lock screen / Cover Sheet.
 
-## Features:
+## Features
 * Immediate access
 	* StickyNote lives on your device's lock screen / Cover Sheet, which means that it's the first thing you see when you unlock your device, and is always a swipe away when your device is unlocked
 * Visible when you need it, gone when you don't
@@ -22,7 +22,10 @@ Sometimes you need to take a note as quickly as possible, or write down a remind
 &nbsp;
 [<img src="screenshots/stickynote-4.png" width="200" height="433">](screenshots/stickynote-4.png)
 
-## Compatibility:
+## Installation
+You can install this tweak on your jailbroken iOS device from the [Twickd repo](https://repo.twickd.com/package/com.twickd.gabriel-siu.stickynote)
+
+## Compatibility
 This tweak is compatible for iPhones and iPads running iOS 11 - 13
 
 &nbsp;
