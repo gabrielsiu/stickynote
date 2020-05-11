@@ -14,13 +14,13 @@ Sometimes you need to take a note as quickly as possible, or write down a remind
 * Free and open source
 
 ## Screenshots
-[<img src="screenshots/stickynote.png" width="200" height="433">](screenshots/stickynote-1.png)
+[<img src="screenshots/stickynote-1.png" width="200" height="433">](screenshots/stickynote-1.png)
 &nbsp;
-[<img src="screenshots/stickynote.png" width="200" height="433">](screenshots/stickynote-2.png)
+[<img src="screenshots/stickynote-2.png" width="200" height="433">](screenshots/stickynote-2.png)
 &nbsp;
-[<img src="screenshots/stickynote.png" width="200" height="433">](screenshots/stickynote-3.png)
+[<img src="screenshots/stickynote-3.png" width="200" height="433">](screenshots/stickynote-3.png)
 &nbsp;
-[<img src="screenshots/stickynote.png" width="200" height="433">](screenshots/stickynote-4.png)
+[<img src="screenshots/stickynote-4.png" width="200" height="433">](screenshots/stickynote-4.png)
 
 ## Compatibility:
 This tweak is compatible for iPhones and iPads running iOS 11 - 13
