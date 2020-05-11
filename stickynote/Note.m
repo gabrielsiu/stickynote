@@ -271,6 +271,7 @@
 }
 
 - (void)restoreSavedText {
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"stickynote_text"];
 	NSString *savedText = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_text"];
 	if (savedText) {
 		// When restoring saved text after a respring, if no text was saved, the text view will be scrollable
