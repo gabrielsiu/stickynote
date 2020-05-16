@@ -35,6 +35,10 @@
 	if (![preferences[@"useBlurEffect"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"blurStyleCell"]] animated:NO];
 	}
+	if (![preferences[@"useHeaderText"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerTextCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerFontSizeCell"]] animated:NO];
+	}
 }
 
 - (void)reloadSpecifiers {
@@ -69,13 +73,17 @@
 	if (![preferences[@"useBlurEffect"] boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"blurStyleCell"]] animated:NO];
 	}
+	if (![preferences[@"useHeaderText"] boolValue]) {
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerTextCell"]] animated:NO];
+		[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerFontSizeCell"]] animated:NO];
+	}
 }
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
 
-		NSArray *chosenIDs = @[@"customNoteColorCell", @"customFontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell", @"buttonsHideDelayCell", @"topButtonSizeCell", @"blurStyleCell"];
+		NSArray *chosenIDs = @[@"customNoteColorCell", @"customFontColorCell", @"alphaCell", @"durationCell", @"buttonSizeCell", @"customFontCell", @"availableFontsCell", @"buttonsHideDelayCell", @"topButtonSizeCell", @"blurStyleCell", @"headerTextCell", @"headerFontSizeCell"];
 		self.savedSpecifiers = (!self.savedSpecifiers) ? [[NSMutableDictionary alloc] init] : self.savedSpecifiers;
 		for (PSSpecifier *specifier in _specifiers) {
 			if ([chosenIDs containsObject:[specifier propertyForKey:@"id"]]) {
@@ -121,21 +129,28 @@
 	} else if ([key isEqualToString:@"useBlurEffect"]) {
 		prevID = @"useBlurEffectCell";
 		chosenID = @"blurStyleCell";
+	} else if ([key isEqualToString:@"useHeaderText"]) {
+		prevID = @"useHeaderTextCell";
+		chosenID = @"headerTextCell";
 	} else {
 		return;
 	}
 
 	if (![value boolValue]) {
 		[self removeContiguousSpecifiers:@[self.savedSpecifiers[chosenID]] animated:YES];
-		// Also remove the available fonts cell upon disabling custom fonts
+		// If more than one cell should be removed, remove it
 		if ([key isEqualToString:@"useCustomFont"]) {
 			[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] animated:YES];
+		} else if ([key isEqualToString:@"useHeaderText"]) {
+			[self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerFontSizeCell"]] animated:YES];
 		}
 	} else if (![self containsSpecifier:self.savedSpecifiers[chosenID]]) {
 		[self insertContiguousSpecifiers:@[self.savedSpecifiers[chosenID]] afterSpecifierID:prevID animated:YES];
-		// Also insert the available fonts cell upon enabling custom fonts
+		// If more than one cell should be inserted, remove it
 		if ([key isEqualToString:@"useCustomFont"]) {
 			[self insertContiguousSpecifiers:@[self.savedSpecifiers[@"availableFontsCell"]] afterSpecifierID:@"customFontCell" animated:YES];
+		} else if ([key isEqualToString:@"useHeaderText"]) {
+			[self insertContiguousSpecifiers:@[self.savedSpecifiers[@"headerFontSizeCell"]] afterSpecifierID:@"headerTextCell" animated:YES];
 		}
 	}
 }

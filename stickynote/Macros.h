@@ -107,9 +107,10 @@
 	CGPoint translation = [sender translationInView:noteView.superview];\
 	if (sender.state == UIGestureRecognizerStateBegan)\
 		initialCenter = noteView.center;\
-	if (sender.state == UIGestureRecognizerStateEnded)\
+	if (sender.state == UIGestureRecognizerStateEnded) {\
 		[[NSUserDefaults standardUserDefaults] setObject:NSStringFromCGPoint(CGPointMake(noteView.frame.origin.x, noteView.frame.origin.y)) forKey:@"stickynote_position"];\
 		[[NSUserDefaults standardUserDefaults] synchronize];\
+	}\
 	if (sender.state != UIGestureRecognizerStateCancelled) {\
 		noteView.center = CGPointMake(initialCenter.x + translation.x, initialCenter.y + translation.y);\
 		if (useButtonsHideDelay && !noteVC.isEditing && noteVC.noteView.privacyViewIsHidden) {\

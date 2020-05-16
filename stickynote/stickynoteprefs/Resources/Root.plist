@@ -426,14 +426,56 @@
 			<key>id</key>
 			<string>buttonSizeCell</string>
 		</dict>
-		<!-- Top Buttons -->
+		<!-- Top Bar -->
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Top Buttons</string>
+			<string>Top Bar</string>
 			<key>footerText</key>
 			<string>Enable this to add a share button to the top left of the note, allowing you to share the contents of the note.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Add Header Text</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>useHeaderText</string>
+			<key>id</key>
+			<string>useHeaderTextCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Header Text:</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>headerText</string>
+			<key>id</key>
+			<string>headerTextCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>label</key>
+			<string>Header Font Size:</string>
+			<key>isNumeric</key>
+			<true/>
+			<key>placeholder</key>
+			<string>20</string>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>headerFontSize</string>
+			<key>id</key>
+			<string>headerFontSizeCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -611,7 +653,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Note: After reinstalling or updating this tweak, the privacy view may not dismiss if the device is unlocked too quickly. If this happens, you may need to lock &amp; unlock your device 1-2 times.</string>
+			<string>Note: On some devices, the privacy view may not dismiss if the device is unlocked too quickly after a respring. If this happens, you may need to lock &amp; unlock your device 1-2 times.</string>
 		</dict>
 		<!-- Respring -->
 		<dict>

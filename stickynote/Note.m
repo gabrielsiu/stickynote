@@ -9,7 +9,7 @@
 @property (nonatomic, strong) HBPreferences *prefs;
 @property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
 @property (nonatomic, strong) UIView *privacyView;
-@property (nonatomic, strong) UIView *buttonsContainerView;
+@property (nonatomic, strong) UIView *topBarContainerView;
 @property (nonatomic, strong) UITextView *textView;
 @end
 
@@ -22,7 +22,7 @@
 	if (self) {
 		self.prefs = preferences;
 		[self setupStyle];
-		[self setupButtons];
+		[self setupTopBar];
 		[self setupTextView];
 		[self setupPrivacyView];
 		self.useButtonHiding = useButtonHiding;
@@ -102,7 +102,7 @@
 	}
 }
 
-- (void)setupButtons {
+- (void)setupTopBar {
 	// Determine custom button color, if chosen
 	UIColor *buttonColor;
 	if ([([self.prefs objectForKey:@"useCustomFontColor"] ?: @(NO)) boolValue]) {
@@ -124,10 +124,10 @@
 	NSInteger leftMargin = [([self.prefs objectForKey:@"textViewLeftMargin"] ?: @0) intValue];
 	NSInteger rightMargin = [([self.prefs objectForKey:@"textViewRightMargin"] ?: @0) intValue];
 
-	// Set up buttons container view
-	self.buttonsContainerView = [[UIView alloc] initWithFrame:CGRectMake(leftMargin, topMargin, self.frame.size.width - leftMargin - rightMargin, buttonSize)];
-	self.buttonsContainerView.backgroundColor = UIColor.clearColor;
-	[self addSubview:self.buttonsContainerView];
+	// Set up top bar container view
+	self.topBarContainerView = [[UIView alloc] initWithFrame:CGRectMake(leftMargin, topMargin, self.frame.size.width - leftMargin - rightMargin, buttonSize)];
+	self.topBarContainerView.backgroundColor = UIColor.clearColor;
+	[self addSubview:self.topBarContainerView];
 
 	// Set up navigation bar for the buttons
 	UINavigationBar *buttonsBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width - leftMargin - rightMargin, buttonSize)];
@@ -149,35 +149,71 @@
 	
 	buttonsBar.items = @[buttonsItem];
 	buttonsBar.translatesAutoresizingMaskIntoConstraints = NO;
-	[self.buttonsContainerView addSubview:buttonsBar];
-	[buttonsBar.topAnchor constraintEqualToAnchor:self.buttonsContainerView.topAnchor].active = YES;
-	[buttonsBar.bottomAnchor constraintEqualToAnchor:self.buttonsContainerView.bottomAnchor].active = YES;
-	[buttonsBar.leadingAnchor constraintEqualToAnchor:self.buttonsContainerView.leadingAnchor].active = YES;
-	[buttonsBar.trailingAnchor constraintEqualToAnchor:self.buttonsContainerView.trailingAnchor].active = YES;
+	[self.topBarContainerView addSubview:buttonsBar];
+	[buttonsBar.topAnchor constraintEqualToAnchor:self.topBarContainerView.topAnchor].active = YES;
+	[buttonsBar.bottomAnchor constraintEqualToAnchor:self.topBarContainerView.bottomAnchor].active = YES;
+	[buttonsBar.leadingAnchor constraintEqualToAnchor:self.topBarContainerView.leadingAnchor].active = YES;
+	[buttonsBar.trailingAnchor constraintEqualToAnchor:self.topBarContainerView.trailingAnchor].active = YES;
 
 	// Set up actual buttons
+	UIButton *shareButton;
 	if ([([self.prefs objectForKey:@"allowSharing"] ?: @(NO)) boolValue]) {
-		UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		[shareButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-share.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
 		[shareButton addTarget:self action:@selector(didPressShareButton:) forControlEvents:UIControlEventTouchUpInside];
-		[self.buttonsContainerView addSubview:shareButton];
+		[self.topBarContainerView addSubview:shareButton];
 		shareButton.tintColor = buttonColor;
 		shareButton.translatesAutoresizingMaskIntoConstraints = NO;
-		[shareButton.topAnchor constraintEqualToAnchor:self.buttonsContainerView.topAnchor].active = YES;
-		[shareButton.leadingAnchor constraintEqualToAnchor:self.buttonsContainerView.leadingAnchor].active = YES;
+		[shareButton.topAnchor constraintEqualToAnchor:self.topBarContainerView.topAnchor].active = YES;
+		[shareButton.leadingAnchor constraintEqualToAnchor:self.topBarContainerView.leadingAnchor].active = YES;
 		[shareButton.widthAnchor constraintEqualToConstant:buttonSize].active = YES;
 		[shareButton.heightAnchor constraintEqualToConstant:buttonSize].active = YES;
 	}
 	UIButton *clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[clearButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-clear.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
 	[clearButton addTarget:self action:@selector(didPressClearButton:) forControlEvents:UIControlEventTouchUpInside];
-	[self.buttonsContainerView addSubview:clearButton];
+	[self.topBarContainerView addSubview:clearButton];
 	clearButton.tintColor = buttonColor;
 	clearButton.translatesAutoresizingMaskIntoConstraints = NO;
-	[clearButton.topAnchor constraintEqualToAnchor:self.buttonsContainerView.topAnchor].active = YES;
-	[clearButton.trailingAnchor constraintEqualToAnchor:self.buttonsContainerView.trailingAnchor].active = YES;
+	[clearButton.topAnchor constraintEqualToAnchor:self.topBarContainerView.topAnchor].active = YES;
+	[clearButton.trailingAnchor constraintEqualToAnchor:self.topBarContainerView.trailingAnchor].active = YES;
 	[clearButton.widthAnchor constraintEqualToConstant:buttonSize].active = YES;
 	[clearButton.heightAnchor constraintEqualToConstant:buttonSize].active = YES;
+
+	// Set up optional header text
+	if ([([self.prefs objectForKey:@"useHeaderText"] ?: @(NO)) boolValue]) {
+		UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, buttonSize, self.frame.size.width - leftMargin - 2*buttonSize - rightMargin, buttonSize)];
+		headerLabel.textAlignment = NSTextAlignmentCenter;
+		headerLabel.textColor = buttonColor;
+		headerLabel.text = [self.prefs objectForKey:@"headerText"] ?: @"";
+		if ([([self.prefs objectForKey:@"useCustomFont"] ?: @(NO)) boolValue]) {
+			NSInteger headerFontSize;
+			if ([self.prefs valueExistsForKey:@"headerFontSize"]) {
+				headerFontSize = [([self.prefs objectForKey:@"headerFontSize"] ?: @(kDefaultFontSize)) intValue];
+			} else {
+				headerFontSize = kDefaultFontSize;
+			}
+			NSString *fontName = [self.prefs objectForKey:@"customFont"] ?: @"";
+			if (![fontName isEqualToString:@""]) {
+				headerLabel.font = [UIFont fontWithName:fontName size:headerFontSize];
+			} else {
+				headerLabel.font = [UIFont systemFontOfSize:headerFontSize];
+			}
+		} else {
+			headerLabel.font = [UIFont systemFontOfSize:kDefaultFontSize];
+		}
+
+		[self.topBarContainerView addSubview:headerLabel];
+		headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+		[headerLabel.topAnchor constraintEqualToAnchor:self.topBarContainerView.topAnchor].active = YES;
+		[headerLabel.bottomAnchor constraintEqualToAnchor:self.topBarContainerView.bottomAnchor].active = YES;
+		if (shareButton) {
+			[headerLabel.leadingAnchor constraintEqualToAnchor:shareButton.trailingAnchor].active = YES;
+		} else {
+			[headerLabel.leadingAnchor constraintEqualToAnchor:self.topBarContainerView.leadingAnchor constant:leftMargin+buttonSize].active = YES;
+		}
+		[headerLabel.trailingAnchor constraintEqualToAnchor:clearButton.leadingAnchor].active = YES;
+	}
 }
 
 - (void)setupTextView {
@@ -220,17 +256,17 @@
 	[doneButtonView setItems:[NSArray arrayWithObjects:bulletItem, flexibleSpace, doneButton, nil]];
 	self.textView.inputAccessoryView = doneButtonView;
 
-	[self restoreSavedText];
 	[self addSubview:self.textView];
-
 	NSInteger bottomMargin = [([self.prefs objectForKey:@"textViewBottomMargin"] ?: @0) intValue];
 	NSInteger leftMargin = [([self.prefs objectForKey:@"textViewLeftMargin"] ?: @0) intValue];
 	NSInteger rightMargin = [([self.prefs objectForKey:@"textViewRightMargin"] ?: @0) intValue];
 	self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-	[self.textView.topAnchor constraintEqualToAnchor:self.buttonsContainerView.bottomAnchor].active = YES;
+	[self.textView.topAnchor constraintEqualToAnchor:self.topBarContainerView.bottomAnchor].active = YES;
 	[self.textView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-bottomMargin].active = YES;
 	[self.textView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:leftMargin].active = YES;
 	[self.textView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-rightMargin].active = YES;
+
+	[self restoreSavedText];
 }
 
 - (void)setupPrivacyView {
@@ -266,12 +302,11 @@
 	self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonsBarTapped:)];
 	[self addGestureRecognizer:self.tapRecognizer];
 	self.buttonsHideDelay = [self.prefs nonZeroIntegerForKey:@"buttonsHideDelay" fallback:3];
-	[self.buttonsContainerView setAlpha:0];
-	[self.buttonsContainerView setHidden:YES];
+	[self.topBarContainerView setAlpha:0];
+	[self.topBarContainerView setHidden:YES];
 }
 
 - (void)restoreSavedText {
-	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"stickynote_text"];
 	NSString *savedText = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"stickynote_text"];
 	if (savedText) {
 		// When restoring saved text after a respring, if no text was saved, the text view will be scrollable
@@ -290,7 +325,7 @@
 #pragma mark - Actions
 
 - (void)buttonsBarTapped:(UITapGestureRecognizer *)recognizer {
-	if (self.buttonsContainerView.isHidden) {
+	if (self.topBarContainerView.isHidden) {
 		[self showButtons];
 		[self startTimer];
 	}
@@ -338,7 +373,7 @@
 
 - (void)hidePrivacyView {
 	[self restoreSavedText];
-	[self.buttonsContainerView setHidden:self.useButtonHiding];
+	[self.topBarContainerView setHidden:self.useButtonHiding];
 	[self.privacyView setHidden:YES];
 	[self dismissKeyboard];
 	if (self.useButtonHiding)
@@ -347,7 +382,7 @@
 
 - (void)showPrivacyView {
 	self.textView.text = @"";
-	[self.buttonsContainerView setHidden:YES];
+	[self.topBarContainerView setHidden:YES];
 	[self.privacyView setHidden:NO];
 	if (self.useButtonHiding)
 		self.tapRecognizer.enabled = NO;
@@ -365,16 +400,16 @@
 
 - (void)hideButtons {
 	[UIView animateWithDuration:kDefaultAnimDuration animations:^{
-		[self.buttonsContainerView setAlpha:0];
+		[self.topBarContainerView setAlpha:0];
 	} completion:^(BOOL finished) {
-		[self.buttonsContainerView setHidden:YES];
+		[self.topBarContainerView setHidden:YES];
 	}];
 }
 
 - (void)showButtons {
-	[self.buttonsContainerView setHidden:NO];
+	[self.topBarContainerView setHidden:NO];
 	[UIView animateWithDuration:kDefaultAnimDuration animations:^{
-		[self.buttonsContainerView setAlpha:1.0f];
+		[self.topBarContainerView setAlpha:1.0f];
 	} completion:nil];
 }
 
