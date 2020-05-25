@@ -25,6 +25,8 @@ Sometimes you need to take a note as quickly as possible, or write down a remind
 ## Installation
 You can install this tweak on your jailbroken iOS device from the [Twickd repo](https://repo.twickd.com/package/com.twickd.gabriel-siu.stickynote)
 
+[<img src="screenshots/twickd-stickynote.png" width="348" height="195.75">](https://repo.twickd.com/package/com.twickd.gabriel-siu.stickynote)
+
 ## Compatibility
 This tweak is compatible for iPhones and iPads running iOS 11 - 13
 

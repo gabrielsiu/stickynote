@@ -372,20 +372,22 @@
 }
 
 - (void)hidePrivacyView {
-	[self restoreSavedText];
+	if (self.useButtonHiding) {
+		self.tapRecognizer.enabled = YES;
+	}
 	[self.topBarContainerView setHidden:self.useButtonHiding];
 	[self.privacyView setHidden:YES];
 	[self dismissKeyboard];
-	if (self.useButtonHiding)
-		self.tapRecognizer.enabled = YES;
+	[self restoreSavedText];
 }
 
 - (void)showPrivacyView {
-	self.textView.text = @"";
+	if (self.useButtonHiding) {
+		self.tapRecognizer.enabled = NO;
+	}
 	[self.topBarContainerView setHidden:YES];
 	[self.privacyView setHidden:NO];
-	if (self.useButtonHiding)
-		self.tapRecognizer.enabled = NO;
+	self.textView.text = @"";
 }
 
 - (void)startTimer {
