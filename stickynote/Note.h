@@ -1,18 +1,12 @@
 #import <Cephei/HBPreferences.h>
-
-@class Note;
-@protocol ButtonActionDelegate <NSObject>
-- (void)didPressShareButton:(Note *)sender;
-- (void)didPressClearButton:(Note *)sender;
-@end
+#import "NoteTopBar.h"
 
 @interface Note : UIView
 
-@property (nonatomic, weak) id <ButtonActionDelegate> delegate;
-@property (nonatomic, strong) UIBarButtonItem *shareButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *clearButtonItem;
+@property (nonatomic, strong) NoteTopBar *topBar;
 
 - (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences useButtonHiding:(BOOL)useButtonHiding;
+- (void)setTopBarDelegate:(id)delegate;
 - (void)setTextViewDelegate:(id)delegate;
 - (void)saveText;
 - (void)clearTextView;

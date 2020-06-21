@@ -4,7 +4,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = StickyNote
 
-StickyNote_FILES = Tweak.xm Note.m NoteViewController.m Constants.m HBPreferences+Helpers.m
+StickyNote_FILES = Tweak.xm Note.m NoteTopBar.m NoteViewController.m Constants.m HBPreferences+Helpers.m
 StickyNote_CFLAGS = -fobjc-arc
 StickyNote_EXTRA_FRAMEWORKS += Cephei
 StickyNote_LIBRARIES = sparkcolourpicker

@@ -30,7 +30,7 @@
 		self.noteView = [[Note alloc] initWithFrame:CGRectMake(position.x, position.y, width, height) prefs:preferences useButtonHiding:useButtonHiding];
 		if (self.noteView) {
 			[self.noteView setTextViewDelegate:self];
-			self.noteView.delegate = self;
+			[self.noteView setTopBarDelegate:self];
 			self.isEditing = NO;
 
 			// Restore hidden status of note
@@ -62,6 +62,10 @@
 
 #pragma mark - ButtonActionDelegate Methods
 
+- (void)didPressLockButton:(Note *)sender {
+
+}
+
 - (void)didPressShareButton:(Note *)sender {
 	
 	NSArray *items = @[[self.noteView getText]];
@@ -70,7 +74,7 @@
 	// Make the presentation a popover for iPads
 	controller.modalPresentationStyle = UIModalPresentationPopover;
 	UIPopoverPresentationController *popController = [controller popoverPresentationController];
-	popController.barButtonItem = self.noteView.shareButtonItem;
+	popController.barButtonItem = self.noteView.topBar.shareButtonItem;
 	[self presentViewController:controller animated:YES completion:nil];
 
 	controller.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *error) {
@@ -96,7 +100,7 @@
 	// Make the presentation a popover for iPads
 	alertController.modalPresentationStyle = UIModalPresentationPopover;
 	UIPopoverPresentationController *popController = [alertController popoverPresentationController];
-	popController.barButtonItem = self.noteView.clearButtonItem;
+	popController.barButtonItem = self.noteView.topBar.clearButtonItem;
 	[self presentViewController:alertController animated:YES completion:nil];
 }
 

@@ -27,6 +27,11 @@
 
 @end
 
+// @interface SBDashBoardIdleTimerController : NSObject
+// - (void)addIdleTimerDisabledAssertionReason:(id)arg1;
+// - (void)removeIdleTimerDisabledAssertionReason:(id)arg1;
+// @end
+
 #pragma mark iOS 12
 
 @interface SBDashBoardViewBase : SBFTouchPassThroughView
@@ -39,6 +44,11 @@
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender;
 
 @end
+
+// @interface SBDashBoardIdleTimerProvider : NSObject
+// - (void)addDisabledIdleTimerAssertionReason:(id)arg1;
+// - (void)removeDisabledIdleTimerAssertionReason:(id)arg1;
+// @end
 
 #pragma mark - Properties
 
@@ -77,6 +87,7 @@ BOOL respringOccurred = YES;
 				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.DeviceLockStatusChanged"), NULL);
 				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.hasBlankedScreen"), NULL);
 			}
+			// [SBDashBoardIdleTimerController addIdleTimerDisabledAssertionReason:nil];
 		}
 	}
 }
@@ -170,6 +181,9 @@ static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFS
 		[noteVC.noteView showPrivacyView];
 	}
 }
+
+#pragma mark - Lock Screen Idle Timer
+
 
 #pragma mark - Initialization
 
