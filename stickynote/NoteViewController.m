@@ -37,6 +37,8 @@
 			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"stickynote_hidden"] ?: NO) {
 				[self.noteView setHidden:YES];
 			}
+			// Restore locked status of note
+			self.isLocked = ([[NSUserDefaults standardUserDefaults] boolForKey:@"stickynote_locked"] ?: NO);
 		}
 	}
 	return self;
@@ -62,12 +64,11 @@
 
 #pragma mark - ButtonActionDelegate Methods
 
-- (void)didPressLockButton:(Note *)sender {
-
+- (void)didPressLockButton:(BOOL)locked {
+	self.isLocked = locked;
 }
 
 - (void)didPressShareButton:(Note *)sender {
-	
 	NSArray *items = @[[self.noteView getText]];
 	UIActivityViewController *controller = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
 	

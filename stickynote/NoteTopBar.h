@@ -2,7 +2,7 @@
 
 @class NoteTopBar;
 @protocol ButtonActionDelegate <NSObject>
-- (void)didPressLockButton:(NoteTopBar *)sender;
+- (void)didPressLockButton:(BOOL)locked;
 - (void)didPressShareButton:(NoteTopBar *)sender;
 - (void)didPressClearButton:(NoteTopBar *)sender;
 @end

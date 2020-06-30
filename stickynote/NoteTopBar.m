@@ -3,6 +3,7 @@
 #import "NoteTopBar.h"
 
 @interface NoteTopBar ()
+@property (nonatomic) BOOL noteLocked;
 @property (nonatomic) NSInteger buttonSize;
 @property (nonatomic, strong) UIColor *secondaryColor;
 @property (nonatomic, strong) HBPreferences *prefs;
@@ -75,7 +76,7 @@
 - (void)setupButtons {
 	// Lock Button
 	self.lockButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.lockButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:@"/icon-lock.png"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+	[self setLockImage:([[NSUserDefaults standardUserDefaults] boolForKey:@"stickynote_locked"] ?: NO)];
 	[self.lockButton addTarget:self action:@selector(didPressLockButton:) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.lockButton];
 	self.lockButton.tintColor = self.secondaryColor;
@@ -147,7 +148,11 @@
 #pragma mark - Actions
 
 - (void)didPressLockButton:(UIButton *)sender {
-	[self.delegate didPressLockButton:self];
+	self.noteLocked = !self.noteLocked;
+	[self setLockImage:self.noteLocked];
+	[[NSUserDefaults standardUserDefaults] setBool:self.noteLocked forKey:@"stickynote_locked"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	[self.delegate didPressLockButton:self.noteLocked];
 }
 
 - (void)didPressShareButton:(UIButton *)sender {
@@ -156,6 +161,18 @@
 
 - (void)didPressClearButton:(UIButton *)sender {
 	[self.delegate didPressClearButton:self];
+}
+
+#pragma mark - Private Helpers
+
+- (void)setLockImage:(BOOL)locked {
+	NSString *imageName;
+	if (locked) {
+		imageName = @"/icon-lock.png";
+	} else {
+		imageName = @"/icon-unlock.png";
+	}
+	[self.lockButton setImage:[[UIImage imageWithContentsOfFile:[kAssetsPath stringByAppendingString:imageName]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
 }
 
 @end

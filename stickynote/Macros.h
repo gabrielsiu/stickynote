@@ -103,6 +103,8 @@
 #define HANDLE_DRAG(sender) ({\
 	if (!sender.view)\
 		return;\
+	if (noteVC.isLocked)\
+		return;\
 	UIView *noteView = sender.view;\
 	CGPoint translation = [sender translationInView:noteView.superview];\
 	if (sender.state == UIGestureRecognizerStateBegan)\
