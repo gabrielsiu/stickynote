@@ -6,8 +6,8 @@
 @property (nonatomic, strong) NoteTopBar *topBar;
 
 - (id)initWithFrame:(CGRect)frame prefs:(HBPreferences *)preferences useButtonHiding:(BOOL)useButtonHiding;
-- (void)setTopBarDelegate:(id)delegate;
 - (void)setTextViewDelegate:(id)delegate;
+- (void)setTopBarDelegate:(id)delegate;
 - (void)saveText;
 - (void)clearTextView;
 - (NSString *)getText;

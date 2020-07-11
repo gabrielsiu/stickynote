@@ -51,23 +51,23 @@
 	NSInteger animationNum = [([prefs objectForKey:@"animationType"] ?: @0) intValue];\
 	UIViewAnimationOptions animationType;\
 	switch (animationNum) {\
-		case 1:\
-			animationType = UIViewAnimationOptionTransitionCurlUp;\
-			break;\
-		case 2:\
-			animationType = UIViewAnimationOptionTransitionFlipFromLeft;\
-			break;\
-		case 3:\
-			animationType = UIViewAnimationOptionTransitionFlipFromRight;\
-			break;\
-		case 4:\
-			animationType = UIViewAnimationOptionTransitionFlipFromTop;\
-			break;\
-		case 5:\
-			animationType = UIViewAnimationOptionTransitionFlipFromBottom;\
-			break;\
-		default:\
-			animationType = UIViewAnimationOptionTransitionCrossDissolve;\
+	case 1:\
+		animationType = UIViewAnimationOptionTransitionCurlUp;\
+		break;\
+	case 2:\
+		animationType = UIViewAnimationOptionTransitionFlipFromLeft;\
+		break;\
+	case 3:\
+		animationType = UIViewAnimationOptionTransitionFlipFromRight;\
+		break;\
+	case 4:\
+		animationType = UIViewAnimationOptionTransitionFlipFromTop;\
+		break;\
+	case 5:\
+		animationType = UIViewAnimationOptionTransitionFlipFromBottom;\
+		break;\
+	default:\
+		animationType = UIViewAnimationOptionTransitionCrossDissolve;\
 	}\
 	/* If Curl animation is selected, use the curlDown animation for showing the note */\
 	if (!shouldHide && animationNum == 1) {\
@@ -134,4 +134,22 @@
 			[[NSUserDefaults standardUserDefaults] synchronize];\
 		}];\
 	}\
+})
+
+#define HANDLE_IDLE_TIMER_NOTIFICATION_13() ({\
+	NSDictionary *userInfo = notification.userInfo;\
+    BOOL disableIdleTimer = [([userInfo objectForKey:@"disableIdleTimer"] ?: @(NO)) boolValue];\
+	if (disableIdleTimer)\
+		[getIdleTimerProvider13() addDisabledIdleTimerAssertionReason:@"stickynote_disableIdleTimer"];\
+	else\
+		[getIdleTimerProvider13() removeDisabledIdleTimerAssertionReason:@"stickynote_disableIdleTimer"];\
+})
+
+#define HANDLE_IDLE_TIMER_NOTIFICATION_12() ({\
+	NSDictionary *userInfo = notification.userInfo;\
+    BOOL disableIdleTimer = [([userInfo objectForKey:@"disableIdleTimer"] ?: @(NO)) boolValue];\
+	if (disableIdleTimer)\
+		[getIdleTimerProvider12() addDisabledIdleTimerAssertionReason:@"stickynote_disableIdleTimer"];\
+	else\
+		[getIdleTimerProvider12() removeDisabledIdleTimerAssertionReason:@"stickynote_disableIdleTimer"];\
 })

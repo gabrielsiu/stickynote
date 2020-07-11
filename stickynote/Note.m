@@ -66,23 +66,23 @@
 		NSInteger blurStyleNum = [([self.prefs objectForKey:@"blurStyle"] ?: @3) intValue];
 		UIBlurEffectStyle blurStyle;
 		switch (blurStyleNum) {
-			case 0:
-				blurStyle = UIBlurEffectStyleExtraLight;
-				break;
-			case 1:
-				blurStyle = UIBlurEffectStyleLight;
-				break;
-			case 2:
-				blurStyle = UIBlurEffectStyleDark;
-				break;
-			case 3:
-				blurStyle = UIBlurEffectStyleRegular;
-				break;
-			case 4:
-				blurStyle = UIBlurEffectStyleProminent;
-				break;
-			default:
-				blurStyle = UIBlurEffectStyleRegular;
+		case 0:
+			blurStyle = UIBlurEffectStyleExtraLight;
+			break;
+		case 1:
+			blurStyle = UIBlurEffectStyleLight;
+			break;
+		case 2:
+			blurStyle = UIBlurEffectStyleDark;
+			break;
+		case 3:
+			blurStyle = UIBlurEffectStyleRegular;
+			break;
+		case 4:
+			blurStyle = UIBlurEffectStyleProminent;
+			break;
+		default:
+			blurStyle = UIBlurEffectStyleRegular;
 		}
 		UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:blurStyle];
 		UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];

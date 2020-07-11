@@ -47,6 +47,7 @@
 #pragma mark - UITextView Delegate Methods
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
+	[self disableIdleTimer:YES];
 	self.isEditing = YES;
 	if (self.useButtonHiding) {
 		[self.noteView showButtons];
@@ -55,6 +56,7 @@
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
+	[self disableIdleTimer:NO];
 	self.isEditing = NO;
 	[self.noteView saveText];
 	if (self.useButtonHiding) {
@@ -103,6 +105,13 @@
 	UIPopoverPresentationController *popController = [alertController popoverPresentationController];
 	popController.barButtonItem = self.noteView.topBar.clearButtonItem;
 	[self presentViewController:alertController animated:YES completion:nil];
+}
+
+#pragma mark - Private Helpers
+
+- (void)disableIdleTimer:(BOOL)disabled {
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@(disabled) forKey:@"disableIdleTimer"];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"stickynote_idletimer" object:nil userInfo:userInfo];
 }
 
 @end

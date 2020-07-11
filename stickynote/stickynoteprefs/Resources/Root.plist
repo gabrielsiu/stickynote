@@ -628,6 +628,27 @@
 			<key>footerText</key>
 			<string>Changes to the animations do not require a respring to take effect.</string>
 		</dict>
+		<!-- Lockscreen Idle Duration -->
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Animations</string>
+			<key>footerText</key>
+			<string>Disable auto-lock on the lockscreen to prevent the display from automatically turning off while typing.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Disable Auto-Lock while typing</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gabrielsiu.stickynoteprefs</string>
+			<key>key</key>
+			<string>disableLockscreenAutoLock</string>
+		</dict>
 		<!-- Security -->
 		<dict>
 			<key>cell</key>

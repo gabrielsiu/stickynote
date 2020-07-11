@@ -14,41 +14,52 @@
 @interface SBFTouchPassThroughView : UIView
 @end
 
+@interface SBCoverSheetPresentationManager : NSObject
++ (id)sharedInstance;
+- (id)dashBoardViewController;
+- (id)coverSheetViewController;
+@end
+
+@interface SBDashBoardIdleTimerProvider : NSObject
+- (void)addDisabledIdleTimerAssertionReason:(id)arg1;
+- (void)removeDisabledIdleTimerAssertionReason:(id)arg1;
+@end
+
 #pragma mark iOS 13
 
 @interface CSCoverSheetViewBase : SBFTouchPassThroughView
-
 - (UIViewController *)_viewControllerForAncestor;
 - (void)didMoveToSuperview;
 
 - (void)didPressHideButton:(UIButton *)sender;
 - (void)handleDrag:(UIPanGestureRecognizer *)sender;
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender;
-
 @end
 
-// @interface SBDashBoardIdleTimerController : NSObject
-// - (void)addIdleTimerDisabledAssertionReason:(id)arg1;
-// - (void)removeIdleTimerDisabledAssertionReason:(id)arg1;
-// @end
+@interface SBDashBoardIdleTimerController : NSObject {
+	SBDashBoardIdleTimerProvider *_dashBoardIdleTimerProvider;
+}
+@end
 
-#pragma mark iOS 12
+@interface CSCoverSheetViewController : UIViewController
+- (id)idleTimerController;
+@end
+
+#pragma mark iOS 11 & 12
 
 @interface SBDashBoardViewBase : SBFTouchPassThroughView
-
 - (UIViewController *)_viewControllerForAncestor;
 - (void)didMoveToSuperview;
 
 - (void)didPressHideButton:(UIButton *)sender;
 - (void)handleDrag:(UIPanGestureRecognizer *)sender;
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender;
-
 @end
 
-// @interface SBDashBoardIdleTimerProvider : NSObject
-// - (void)addDisabledIdleTimerAssertionReason:(id)arg1;
-// - (void)removeDisabledIdleTimerAssertionReason:(id)arg1;
-// @end
+@interface SBDashBoardViewController : UIViewController {
+	SBDashBoardIdleTimerProvider *_idleTimerProvider;
+}
+@end
 
 #pragma mark - Properties
 
@@ -69,6 +80,20 @@ BOOL respringOccurred = YES;
 #pragma mark - iOS 13
 
 %group iOS13
+
+// Much credit & thanks to DGh0st for his implementation of disabling the lock screen idle timer
+// This function (and the other idle timer logic) is adapted from DGh0st's tweak 'FLEXall'
+// Source code for FLEXall: https://github.com/DGh0st/FLEXall
+static SBDashBoardIdleTimerProvider *getIdleTimerProvider13() {
+	SBCoverSheetPresentationManager *presentationManager = [%c(SBCoverSheetPresentationManager) sharedInstance];
+	SBDashBoardIdleTimerProvider *_idleTimerProvider = nil;
+	if ([presentationManager respondsToSelector:@selector(coverSheetViewController)]) {
+		SBDashBoardIdleTimerController *dashboardIdleTimerController = [[presentationManager coverSheetViewController] idleTimerController];
+		_idleTimerProvider = [dashboardIdleTimerController valueForKey:@"_dashBoardIdleTimerProvider"];
+	}
+	return _idleTimerProvider;
+}
+
 %hook CSCoverSheetViewBase
 
 - (void)didMoveToSuperview {
@@ -87,49 +112,10 @@ BOOL respringOccurred = YES;
 				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.DeviceLockStatusChanged"), NULL);
 				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.hasBlankedScreen"), NULL);
 			}
-			// [SBDashBoardIdleTimerController addIdleTimerDisabledAssertionReason:nil];
-		}
-	}
-}
-
-%new
-- (void)didPressHideButton:(UIButton *)sender {
-	DID_PRESS_HIDE_BUTTON();
-}
-
-%new
-- (void)handleDrag:(UIPanGestureRecognizer *)sender {
-	HANDLE_DRAG(sender);
-}
-
-%new
-- (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
-	HANDLE_LONG_PRESS(sender);
-}
-
-%end
-%end
-
-#pragma mark - iOS 11 & 12
-
-%group iOS11and12
-%hook SBDashBoardViewBase
-
-- (void)didMoveToSuperview {
-	%orig;
-	if (!noteVC) {
-		if ([self.superview isMemberOfClass:[%c(SBDashBoardMainPageView) class]]) {
-			SETUP_NOTE();
-			SETUP_HIDE_BUTTON();
-
-			// If the device is secured with a passcode, enable the Darwin notifications
-			if ([[%c(SBLockStateAggregator) sharedInstance] lockState] != 0) {
-				passcodeEnabled = YES;
-			} else {
-				// Else, hide the privacy view and remove the observers
-				[noteVC.noteView hidePrivacyView];
-				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.DeviceLockStatusChanged"), NULL);
-				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.hasBlankedScreen"), NULL);
+			
+			// If enabled, start observing notifications for disabling the lock screen idle timer
+			if ([([prefs objectForKey:@"disableLockscreenAutoLock"] ?: @(NO)) boolValue]) {
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveIdleTimerNotification:) name:@"stickynote_idletimer" object:nil];
 			}
 		}
 	}
@@ -148,6 +134,78 @@ BOOL respringOccurred = YES;
 %new
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
 	HANDLE_LONG_PRESS(sender);
+}
+
+%new
+- (void)receiveIdleTimerNotification:(NSNotification *)notification {
+	HANDLE_IDLE_TIMER_NOTIFICATION_13();
+}
+
+%end
+%end
+
+#pragma mark - iOS 11 & 12
+
+%group iOS11and12
+
+// Much credit & thanks to DGh0st for his implementation of disabling the lock screen idle timer
+// This function (and the other idle timer logic) is adapted from DGh0st's tweak 'FLEXall'
+// Source code for FLEXall: https://github.com/DGh0st/FLEXall
+static SBDashBoardIdleTimerProvider *getIdleTimerProvider12() {
+	SBCoverSheetPresentationManager *presentationManager = [%c(SBCoverSheetPresentationManager) sharedInstance];
+	SBDashBoardIdleTimerProvider *_idleTimerProvider = nil;
+	if ([presentationManager respondsToSelector:@selector(dashBoardViewController)]) {
+		SBDashBoardViewController *dashBoardViewController = [presentationManager dashBoardViewController];
+		_idleTimerProvider = [dashBoardViewController valueForKey:@"_idleTimerProvider"];
+	}
+	return _idleTimerProvider;
+}
+
+%hook SBDashBoardViewBase
+
+- (void)didMoveToSuperview {
+	%orig;
+	if (!noteVC) {
+		if ([self.superview isMemberOfClass:[%c(SBDashBoardMainPageView) class]]) {
+			SETUP_NOTE();
+			SETUP_HIDE_BUTTON();
+
+			// If the device is secured with a passcode, enable the Darwin notifications
+			if ([[%c(SBLockStateAggregator) sharedInstance] lockState] != 0) {
+				passcodeEnabled = YES;
+			} else {
+				// Else, hide the privacy view and remove the observers
+				[noteVC.noteView hidePrivacyView];
+				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.DeviceLockStatusChanged"), NULL);
+				CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.apple.springboard.hasBlankedScreen"), NULL);
+			}
+
+			// If enabled, start observing notifications for disabling the lock screen idle timer
+			if ([([prefs objectForKey:@"disableLockscreenAutoLock"] ?: @(NO)) boolValue]) {
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveIdleTimerNotification:) name:@"stickynote_idletimer" object:nil];
+			}
+		}
+	}
+}
+
+%new
+- (void)didPressHideButton:(UIButton *)sender {
+	DID_PRESS_HIDE_BUTTON();
+}
+
+%new
+- (void)handleDrag:(UIPanGestureRecognizer *)sender {
+	HANDLE_DRAG(sender);
+}
+
+%new
+- (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
+	HANDLE_LONG_PRESS(sender);
+}
+
+%new
+- (void)receiveIdleTimerNotification:(NSNotification *)notification {
+	HANDLE_IDLE_TIMER_NOTIFICATION_12();
 }
 
 %end
