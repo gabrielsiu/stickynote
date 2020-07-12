@@ -240,9 +240,6 @@ static void hasBlankedScreen(CFNotificationCenterRef center, void *observer, CFS
 	}
 }
 
-#pragma mark - Lock Screen Idle Timer
-
-
 #pragma mark - Initialization
 
 %ctor {

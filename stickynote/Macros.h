@@ -136,6 +136,8 @@
 	}\
 })
 
+#pragma mark - Lock Screen Idle Timer
+
 #define HANDLE_IDLE_TIMER_NOTIFICATION_13() ({\
 	NSDictionary *userInfo = notification.userInfo;\
     BOOL disableIdleTimer = [([userInfo objectForKey:@"disableIdleTimer"] ?: @(NO)) boolValue];\
