@@ -36,7 +36,7 @@
 			<key>label</key>
 			<string>Add Blur Effect</string>
 			<key>default</key>
-			<true/>
+			<false/>
 			<key>defaults</key>
 			<string>com.gabrielsiu.stickynoteprefs</string>
 			<key>key</key>
@@ -633,7 +633,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Animations</string>
+			<string>Lockscreen Idle Duration</string>
 			<key>footerText</key>
 			<string>Disable auto-lock on the lockscreen to prevent the display from automatically turning off while typing.</string>
 		</dict>

@@ -62,7 +62,7 @@
 	self.layer.cornerRadius = cornerRadius;
 
 	// Blur Effect
-	if ([([self.prefs objectForKey:@"useBlurEffect"] ?: @(YES)) boolValue]) {
+	if ([([self.prefs objectForKey:@"useBlurEffect"] ?: @(NO)) boolValue]) {
 		NSInteger blurStyleNum = [([self.prefs objectForKey:@"blurStyle"] ?: @3) intValue];
 		UIBlurEffectStyle blurStyle;
 		switch (blurStyleNum) {
